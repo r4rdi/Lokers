@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lokers2 AI - Cari Lowongan Kerja #LebihPasti & Cepat</title>
+
+        <!-- Tailwind CSS CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Lucide Icons -->
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- GSAP & ScrollTrigger -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+        <!-- VanillaTilt untuk Efek 3D Card Hover -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+        <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              purple: '#5B16FE',
+              darkPurple: '#4208B8',
+              yellow: '#FACC15',
+              bgGray: '#F8FAFC',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+        <style>
+            @import
+            url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+            .perspective-1000 {
+            perspective: 1000px;
+            }
+            .preserve-3d {
+            transform-style: preserve-3d;
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+            }
+            .custom-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            }
+            /* Smooth Pulse Animation */
+            @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            }
+            .animate-pulse-subtle {
+                animation: pulse-subtle 3s ease-in-out infinite;
+            }
+        </style>
+    </head>
+    <body
+        class="bg-brand-bgGray text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-brand-purple selection:text-white">
+
+        <!-- NOTIFICATION TOAST -->
+        <div id="toastNotification"
+            class="fixed bottom-6 right-6 z-[100] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700/60 text-sm">
+            <div id="toastIcon"
+                class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <i data-lucide="check" class="w-4 h-4"></i>
+            </div>
+            <span id="toastMessage" class="font-medium text-slate-100">Aksi
+                berhasil dijalankan!</span>
+        </div>
+
+        <!-- NAVBAR (COMPACT & PROPORTIONAL) -->
+        <nav
+            class="bg-brand-purple text-white px-4 md:px-8 lg:px-12 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-sm border-b border-purple-800/40 backdrop-blur-md bg-opacity-95">
+            <div class="flex items-center space-x-6">
+                <!-- Logo -->
+                <a href="#"
+                    class="text-xl font-extrabold tracking-tight flex items-center group shrink-0">
+                    <span
+                        class="group-hover:tracking-wider transition-all duration-300">Lokers</span>
+                    <span
+                        class="text-brand-yellow text-2xl leading-none">!</span>
+                    <span
+                        class="ml-2 text-[9px] uppercase font-bold tracking-wider bg-white/10 px-1.5 py-0.5 rounded border border-white/20 text-purple-200">AI</span>
+                </a>
+
+                <!-- Menu Links -->
+                <div
+                    class="hidden md:flex items-center space-x-5 text-xs font-medium text-purple-100">
+                    <a href="#loker"
+                        class="hover:text-yellow-300 transition-colors">Eksplor
+                        Loker</a>
+                    <a href="#ai-flow"
+                        class="hover:text-yellow-300 transition-colors flex items-center gap-1">
+                        <i data-lucide="sparkles"
+                            class="w-3 h-3 text-brand-yellow"></i> Cara
+                        Kerja AI
+                    </a>
+                    <a href="#perusahaan"
+                        class="hover:text-yellow-300 transition-colors">Untuk
+                        Perusahaan</a>
+                    <a href="#faq"
+                        class="hover:text-yellow-300 transition-colors">Pusat
+                        Bantuan</a>
+                </div>
+            </div>
+
+            <!-- Actions & Auth -->
+            <div class="flex items-center space-x-2.5">
+                <button onclick="openUploadModal()"
+                    class="bg-brand-yellow hover:bg-yellow-300 text-slate-950 font-bold px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 shadow-sm flex items-center gap-1.5 active:scale-95">
+                    <i data-lucide="sparkles"
+                        class="w-3.5 h-3.5 text-purple-900"></i>
+                    <span>Upload Profil Sekali</span>
+                </button>
+
+                <div
+                    class="hidden sm:flex items-center space-x-1.5 text-xs pl-1">
+                    <button onclick="openAuthModal('login')"
+                        class="text-purple-100 hover:text-white font-medium px-2.5 py-1 rounded-md hover:bg-white/10 transition">Masuk</button>
+                    <span class="text-white/20">|</span>
+                    <button onclick="openAuthModal('register')"
+                        class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium px-2.5 py-1 rounded-md transition">Daftar</button>
+                </div>
+
+                <button
+                    onclick="showToast('Fitur portal B2B dibuka untuk mitra HRD!')"
+                    class="border border-white/30 text-[11px] px-3 py-1 rounded-full hover:bg-white/10 hidden lg:block transition text-purple-100 font-medium">
+                    Pasang Loker (B2B)
+                </button>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <header
+            class="gsap-scroll-section bg-gradient-to-b from-brand-purple via-[#4e0fed] to-brand-darkPurple text-white pt-12 pb-24 px-4 md:px-8 relative overflow-hidden">
+
+            <!-- Floating Badge -->
+            <!-- Floating Badge 1 (Kiri Atas) -->
+            <div id="floating-badge-1"
+                class="absolute -top-2 left-8 opacity-25 hidden lg:block pointer-events-none">
+                <div
+                    class="p-5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 transform rotate-12 shadow-2xl">
+                    <i data-lucide="file-check"
+                        class="w-14 h-14 text-yellow-300"></i>
+                </div>
+            </div>
+
+            <!-- Floating Badge 3 (Kiri Bawah) -->
+            <div id="floating-badge-3"
+                class="absolute top-44 left-16 opacity-25 hidden lg:block pointer-events-none">
+                <div
+                    class="p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 transform -rotate-6 shadow-2xl">
+                    <i data-lucide="podium"
+                        class="w-10 h-10 text-yellow-300"></i>
+                </div>
+            </div>
+
+            <!-- Floating Badge 2 (Kanan Atas) -->
+            <div id="floating-badge-2"
+                class="absolute top-16 right-8 opacity-25 hidden lg:block pointer-events-none">
+                <div
+                    class="p-5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 transform -rotate-12 shadow-2xl">
+                    <i data-lucide="bot"
+                        class="w-14 h-14 text-yellow-300"></i>
+                </div>
+            </div>
+
+            <!-- Floating Badge 4 (Kanan Bawah) -->
+            <div id="floating-badge-4"
+                class="absolute top-52 right-20 opacity-25 hidden lg:block pointer-events-none">
+                <div
+                    class="p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 transform rotate-6 shadow-2xl">
+                    <i data-lucide="zap"
+                        class="w-10 h-10 text-yellow-300"></i>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <div
+                    class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1 text-xs text-purple-200 font-medium mb-4 backdrop-blur-md">
+                    <span>Solusi Anti-Burnout Pencari Kerja Indonesia</span>
+                </div>
+
+                <!-- HERO TITLE & SUBTITLE (PROPORTIONAL & BALANCED) -->
+                <h1
+                    class="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold mb-5 tracking-tight leading-tight max-w-3xl mx-auto">
+                    Lamar Ribuan Loker Otomatis <br class="hidden sm:block">
+                    Pakai AI <span class="text-brand-yellow">#LebihPasti &
+                        Cepat</span>
+                </h1>
+                <p
+                    class="text-purple-100 text-xs md:text-sm lg:text-[13px] mb-8 max-w-xl mx-auto font-normal leading-relaxed opacity-90">
+                    Cukup 1x upload profil. AI langsung meracik CV spesifik
+                    ATS
+                    & Cover Letter personal untuk setiap loker yang kamu
+                    inginkan dalam 1 klik.
+                </p>
+
+                <!-- Category Quick Chips -->
+                <!-- Category Quick Chips (Centered Horizontally) -->
+                <div
+                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 max-w-4xl mx-auto mb-2 text-slate-800 font-semibold text-[11px] md:text-xs">
+                    <button onclick="filterCategory('cepat')"
+                        class="bg-white hover:bg-yellow-50 hover:shadow-md px-3 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-1.5 group transition transform hover:-translate-y-0.5 border border-slate-100">
+                        <span class="whitespace-nowrap">Butuh Cepat</span>
+                        <i data-lucide="chevron-right"
+                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-transform shrink-0"></i>
+                    </button>
+
+                    <button onclick="filterCategory('top')"
+                        class="bg-white hover:bg-yellow-50 hover:shadow-md px-3 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-1.5 group transition transform hover:-translate-y-0.5 border border-slate-100">
+                        <span class="whitespace-nowrap">Perusahaan Top</span>
+                        <i data-lucide="chevron-right"
+                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-transform shrink-0"></i>
+                    </button>
+
+                    <button onclick="filterCategory('remote')"
+                        class="bg-white hover:bg-yellow-50 hover:shadow-md px-3 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-1.5 group transition transform hover:-translate-y-0.5 border border-slate-100">
+                        <span class="whitespace-nowrap">Kerja Remote</span>
+                        <i data-lucide="chevron-right"
+                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-transform shrink-0"></i>
+                    </button>
+
+                    <button onclick="filterCategory('mt')"
+                        class="bg-white hover:bg-yellow-50 hover:shadow-md px-3 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-1.5 group transition transform hover:-translate-y-0.5 border border-slate-100">
+                        <span class="whitespace-nowrap">MT / ODP</span>
+                        <i data-lucide="chevron-right"
+                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-transform shrink-0"></i>
+                    </button>
+
+                    <button onclick="filterCategory('freshgrad')"
+                        class="bg-white hover:bg-yellow-50 hover:shadow-md px-3 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-1.5 group transition transform hover:-translate-y-0.5 col-span-2 sm:col-span-1 border border-slate-100">
+                        <span class="whitespace-nowrap">Fresh Grad</span>
+                        <i data-lucide="chevron-right"
+                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-transform shrink-0"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- SEARCH & FILTER CONSOLE -->
+        <section
+            class="gsap-scroll-section max-w-6xl mx-auto px-4 -mt-12 relative z-20">
+            <div
+                class="bg-white rounded-3xl shadow-2xl p-5 md:p-6 border border-slate-200/80 backdrop-blur-sm">
+                <div
+                    class="flex flex-col md:flex-row gap-3 items-center mb-4">
+                    <div class="relative flex-1 w-full">
+                        <i data-lucide="search"
+                            class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input id="searchInput"
+                            onkeyup="handleSearch(this.value)" type="text"
+                            placeholder="Cari posisi, skill (cth: UI/UX, Python), atau nama perusahaan..."
+                            class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white transition">
+                    </div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button onclick="openSavedDrawer()"
+                            class="relative flex-1 md:flex-initial bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-brand-purple border border-slate-200 px-5 py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition active:scale-95">
+                            <i data-lucide="bookmark"
+                                class="w-4 h-4 text-brand-purple"></i>
+                            <span>Tersimpan</span>
+                            <span id="savedBadgeCount"
+                                class="bg-brand-purple text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+                        </button>
+                        <button
+                            onclick="showToast('Menampilkan riwayat lamaran terkirim!')"
+                            class="flex-1 md:flex-initial bg-brand-purple hover:bg-brand-darkPurple text-white px-5 py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition shadow-md shadow-purple-600/20 active:scale-95">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Terdaftar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="flex items-center gap-2.5 overflow-x-auto custom-scrollbar pb-1 text-xs font-medium">
+                    <div
+                        class="flex items-center gap-1.5 text-slate-400 uppercase tracking-wider text-[10px] font-bold shrink-0">
+                        <i data-lucide="sliders-horizontal"
+                            class="w-3.5 h-3.5"></i> Filter:
+                    </div>
+                    <select
+                        class="border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 focus:outline-none hover:bg-slate-100 transition cursor-pointer">
+                        <option>Level Pengalaman</option>
+                        <option>Entry / Junior</option>
+                        <option>Middle</option>
+                        <option>Senior</option>
+                    </select>
+                    <select
+                        class="border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 focus:outline-none hover:bg-slate-100 transition cursor-pointer">
+                        <option>Jenis Kerja</option>
+                        <option>Full-time</option>
+                        <option>Contract</option>
+                        <option>Internship</option>
+                    </select>
+                    <select
+                        class="border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 focus:outline-none hover:bg-slate-100 transition cursor-pointer">
+                        <option>Tipe Lokasi</option>
+                        <option>On-site</option>
+                        <option>Hybrid</option>
+                        <option>Remote</option>
+                    </select>
+                    <select
+                        class="border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 focus:outline-none hover:bg-slate-100 transition cursor-pointer">
+                        <option>Rentang Gaji</option>
+                        <option>> Rp 3.000.000</option>
+                        <option>> Rp 5.000.000</option>
+                        <option>> Rp 10.000.000</option>
+                    </select>
+                    <select
+                        class="border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-slate-700 focus:outline-none hover:bg-slate-100 transition cursor-pointer">
+                        <option>Industri</option>
+                        <option>Tech & Startup</option>
+                        <option>FMCG</option>
+                        <option>Finance & Banking</option>
+                    </select>
+
+                    <div
+                        class="flex items-center gap-2 ml-auto pl-4 border-l border-slate-200 shrink-0">
+                        <label
+                            class="flex items-center gap-2 cursor-pointer select-none bg-purple-50 hover:bg-purple-100 text-brand-purple px-3 py-1.5 rounded-xl border border-purple-200 transition">
+                            <input type="checkbox" checked
+                                class="w-4 h-4 accent-brand-purple rounded">
+                            <span
+                                class="font-bold text-xs flex items-center gap-1">⚡
+                                1-Click AI Apply Only</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORY PILLS BAR -->
+        <section class="gsap-scroll-section max-w-6xl mx-auto px-4 mt-8">
+            <div
+                class="flex items-center gap-2 overflow-x-auto custom-scrollbar py-1 text-xs font-semibold">
+                <button
+                    class="bg-brand-purple text-white px-4 py-2.5 rounded-xl whitespace-nowrap shadow-sm">Semua
+                    Pekerjaan</button>
+                <button
+                    class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl whitespace-nowrap transition">Admin
+                    & Ops</button>
+                <button
+                    class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl whitespace-nowrap transition">Ads
+                    & Digital Marketing</button>
+                <button
+                    class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl whitespace-nowrap transition">UI/UX
+                    & Design</button>
+                <button
+                    class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl whitespace-nowrap transition">Customer
+                    Service</button>
+                <button
+                    class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl whitespace-nowrap transition">Data
+                    & Analytics</button>
+                <button onclick="openCategoryModal()"
+                    class="bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 px-4 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-1 cursor-pointer active:scale-95">
+                    <span>Lihat Kategori Lain</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3D FEATURE SHOWCASE / VALUE PROPOSITION -->
+        <section id="ai-flow"
+            class="gsap-scroll-section max-w-6xl mx-auto px-4 my-14">
+            <div
+                class="bg-gradient-to-r from-violet-950 via-brand-purple to-indigo-900 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-2xl card-3d-box border border-purple-500/20">
+                <div class="max-w-xl relative z-10">
+                    <div
+                        class="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-300/40 text-brand-yellow text-xs font-black uppercase px-3.5 py-1 rounded-full mb-3 backdrop-blur-sm">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                        Generative
+                        AI Engine 2026
+                    </div>
+                    <h2
+                        class="text-2xl md:text-4xl font-extrabold mt-2 mb-3 tracking-tight">Upload
+                        Sekali. AI Racik CV & Lamar Otomatis.</h2>
+                    <p
+                        class="text-sm md:text-base text-purple-100 mb-8 font-normal leading-relaxed opacity-90">
+                        Hemat 80% waktu repetitif saat melamar kerja. AI
+                        kami
+                        mengekstrak kata kunci lowongan secara real-time
+                        sehingga dokumenmu lolos seleksi awal ATS HRD.
+                    </p>
+
+                    <div
+                        class="grid grid-cols-3 gap-3 md:gap-4 text-center mb-6">
+                        <div
+                            class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 transform hover:scale-105 transition">
+                            <p
+                                class="text-2xl md:text-3xl font-black text-brand-yellow">1x</p>
+                            <p
+                                class="text-xs text-purple-200 mt-1 font-medium">Input
+                                Profil</p>
+                        </div>
+                        <div
+                            class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 transform hover:scale-105 transition">
+                            <p
+                                class="text-2xl md:text-3xl font-black text-brand-yellow">100%</p>
+                            <p
+                                class="text-xs text-purple-200 mt-1 font-medium">ATS-Friendly</p>
+                        </div>
+                        <div
+                            class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 transform hover:scale-105 transition">
+                            <p
+                                class="text-2xl md:text-3xl font-black text-brand-yellow">3x</p>
+                            <p
+                                class="text-xs text-purple-200 mt-1 font-medium">Panggilan
+                                Interview</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KARTU LOKERS AUTO-TAILOR ENGINE (TERPUSAT VERTIKAL) -->
+                <div
+                    class="absolute right-12 top-1/2 -translate-y-1/2 hidden lg:block w-96 opacity-95 pointer-events-none transform rotate-3">
+                    <div
+                        class="bg-white text-slate-800 p-5 rounded-2xl shadow-2xl border-4 border-yellow-400">
+                        <div
+                            class="flex items-center justify-between border-b pb-3 mb-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center font-bold text-brand-purple shadow-inner">
+                                    <i data-lucide="bot"
+                                        class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold">Lokers
+                                        Auto-Tailor Engine</p>
+                                    <p
+                                        class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                                        <i data-lucide="check-circle"
+                                            class="w-3 h-3"></i> Keyword ATS
+                                        Disesuaikan
+                                    </p>
+                                </div>
+                            </div>
+                            <span
+                                class="bg-purple-100 text-brand-purple text-[10px] font-bold px-2 py-0.5 rounded">98%
+                                Match</span>
+                        </div>
+                        <div class="space-y-2 mb-4">
+                            <div
+                                class="h-2 bg-slate-200 rounded w-3/4 animate-pulse"></div>
+                            <div
+                                class="h-2 bg-slate-200 rounded w-full animate-pulse"></div>
+                            <div
+                                class="h-2 bg-slate-200 rounded w-5/6 animate-pulse"></div>
+                        </div>
+                        <button
+                            class="w-full bg-brand-purple text-white text-xs font-bold py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2">
+                            <span>Surat Lamaran & CV Siap Terkirim</span> ⚡
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JOB CARDS GRID -->
+        <main id="loker" class="max-w-6xl mx-auto px-4 my-8">
+            <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Lowongan
+                        Pilihan Hari Ini</h3>
+                    <p class="text-xs text-slate-500">Menampilkan pekerjaan
+                        yang
+                        cocok dengan preferensi AI Anda</p>
+                </div>
+                <span
+                    class="text-xs font-semibold text-brand-purple bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-full w-fit">
+                    🔥 7.000+ Loker Aktif Terverifikasi
+                </span>
+            </div>
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                id="jobs-container">
+
+                <!-- Card 1 -->
+                <div
+                    class="job-card bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300 flex flex-col justify-between relative group"
+                    data-id="job-1" data-title="Junior Video Editor"
+                    data-company="SIRCLO" data-location="Tangerang Selatan"
+                    data-salary="Rp 5.000.000 - 7.000.000" data-tilt
+                    data-tilt-max="5" data-tilt-speed="400">
+                    <div>
+                        <div
+                            class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold px-2.5 py-1 rounded-lg mb-3">
+                            <span>⚡ Pelamar Masih Sedikit</span>
+                        </div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 bg-sky-50 rounded-2xl flex items-center justify-center font-black text-sky-600 text-xs border border-sky-100 shadow-sm">SIRCLO</div>
+                                <div>
+                                    <h4
+                                        class="font-bold text-slate-900 group-hover:text-brand-purple transition leading-tight text-sm">Junior
+                                        Video Editor</h4>
+                                    <p
+                                        class="text-xs text-slate-500 font-medium flex items-center gap-1">SIRCLO
+                                        <i data-lucide="check-circle"
+                                            class="w-3.5 h-3.5 text-emerald-500 fill-emerald-100"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onclick="toggleSaveJob('job-1', 'Junior Video Editor', 'SIRCLO', 'Rp 5.000.000 - 7.000.000', 'Tangerang Selatan')"
+                                class="bookmark-btn p-2 rounded-xl text-slate-300 hover:text-brand-purple hover:bg-purple-50 transition">
+                                <i data-lucide="bookmark"
+                                    class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="mt-4 space-y-2 text-xs text-slate-600 font-normal">
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="clock"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Penuh waktu</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="map-pin"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Hybrid • Tangerang Selatan</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="briefcase"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Min.
+                                Fresh Grad</p>
+                            <p
+                                class="flex items-center gap-2 font-semibold text-slate-800"><i
+                                    data-lucide="banknote"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Rp
+                                5.000.000 - 7.000.000</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                        <span
+                            class="text-slate-400 flex items-center gap-1">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Aktif 1j lalu
+                        </span>
+                        <button
+                            onclick="applyJob('Junior Video Editor', 'SIRCLO')"
+                            class="bg-brand-purple hover:bg-brand-darkPurple text-white px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                            <span>AI Apply</span> ⚡
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div
+                    class="job-card bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300 flex flex-col justify-between relative group"
+                    data-id="job-2" data-title="Interior Designer"
+                    data-company="PT. Fipper Lifestyle"
+                    data-location="Jakarta Barat"
+                    data-salary="Rp 6.500.000 - 7.000.000" data-tilt
+                    data-tilt-max="5" data-tilt-speed="400">
+                    <div>
+                        <div
+                            class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold px-2.5 py-1 rounded-lg mb-3">
+                            <span>⚡ Pelamar Masih Sedikit</span>
+                        </div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center font-bold text-white text-xs shadow-sm">Fipper</div>
+                                <div>
+                                    <h4
+                                        class="font-bold text-slate-900 group-hover:text-brand-purple transition leading-tight text-sm">Interior
+                                        Designer</h4>
+                                    <p
+                                        class="text-xs text-slate-500 font-medium">PT.
+                                        Fipper Lifestyle Indonesia</p>
+                                </div>
+                            </div>
+                            <button
+                                onclick="toggleSaveJob('job-2', 'Interior Designer', 'PT. Fipper Lifestyle', 'Rp 6.500.000 - 7.000.000', 'Jakarta Barat')"
+                                class="bookmark-btn p-2 rounded-xl text-slate-300 hover:text-brand-purple hover:bg-purple-50 transition">
+                                <i data-lucide="bookmark"
+                                    class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="mt-4 space-y-2 text-xs text-slate-600 font-normal">
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="clock"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Penuh waktu</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="map-pin"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                On-site • Jakarta Barat</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="briefcase"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                1-3
+                                Tahun Pengalaman</p>
+                            <p
+                                class="flex items-center gap-2 font-semibold text-slate-800"><i
+                                    data-lucide="banknote"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Rp
+                                6.500.000 - 7.000.000</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                        <span
+                            class="text-slate-400 flex items-center gap-1">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Aktif 14j lalu
+                        </span>
+                        <button
+                            onclick="applyJob('Interior Designer', 'Fipper Lifestyle')"
+                            class="bg-brand-purple hover:bg-brand-darkPurple text-white px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                            <span>AI Apply</span> ⚡
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div
+                    class="job-card bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300 flex flex-col justify-between relative group"
+                    data-id="job-3" data-title="Solution Architect"
+                    data-company="SG-EDTS" data-location="Jakarta Pusat"
+                    data-salary="Gaji Kompetitif" data-tilt
+                    data-tilt-max="5"
+                    data-tilt-speed="400">
+                    <div>
+                        <div class="h-7 mb-3"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center font-black text-emerald-600 text-xs border border-emerald-100 shadow-sm">EDTS</div>
+                                <div>
+                                    <h4
+                                        class="font-bold text-slate-900 group-hover:text-brand-purple transition leading-tight text-sm">Solution
+                                        Architect</h4>
+                                    <p
+                                        class="text-xs text-slate-500 font-medium flex items-center gap-1">SG-EDTS
+                                        <i data-lucide="check-circle"
+                                            class="w-3.5 h-3.5 text-emerald-500 fill-emerald-100"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onclick="toggleSaveJob('job-3', 'Solution Architect', 'SG-EDTS', 'Gaji Kompetitif', 'Jakarta Pusat')"
+                                class="bookmark-btn p-2 rounded-xl text-slate-300 hover:text-brand-purple hover:bg-purple-50 transition">
+                                <i data-lucide="bookmark"
+                                    class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="mt-4 space-y-2 text-xs text-slate-600 font-normal">
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="clock"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Kontrak</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="map-pin"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                On-site • Jakarta Pusat</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="briefcase"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                3-5
+                                Tahun Pengalaman</p>
+                            <p
+                                class="flex items-center gap-2 font-semibold text-slate-800"><i
+                                    data-lucide="banknote"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Gaji
+                                Kompetitif</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                        <span
+                            class="text-slate-400 flex items-center gap-1">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Aktif 18j lalu
+                        </span>
+                        <button
+                            onclick="applyJob('Solution Architect', 'SG-EDTS')"
+                            class="bg-brand-purple hover:bg-brand-darkPurple text-white px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                            <span>AI Apply</span> ⚡
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div
+                    class="job-card bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300 flex flex-col justify-between relative group"
+                    data-id="job-4" data-title="Public Relation Sr. Staff"
+                    data-company="Pou Chen Group"
+                    data-location="Serang Regency"
+                    data-salary="Rp 6.000.000 - 7.500.000" data-tilt
+                    data-tilt-max="5" data-tilt-speed="400">
+                    <div>
+                        <div class="h-7 mb-3"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 bg-blue-900 rounded-2xl flex items-center justify-center font-bold text-white text-xs shadow-sm">PCG</div>
+                                <div>
+                                    <h4
+                                        class="font-bold text-slate-900 group-hover:text-brand-purple transition leading-tight text-sm">Public
+                                        Relation Sr. Staff</h4>
+                                    <p
+                                        class="text-xs text-slate-500 font-medium flex items-center gap-1">Pou
+                                        Chen Group <i
+                                            data-lucide="check-circle"
+                                            class="w-3.5 h-3.5 text-emerald-500 fill-emerald-100"></i></p>
+                                </div>
+                            </div>
+                            <button
+                                onclick="toggleSaveJob('job-4', 'Public Relation Sr. Staff', 'Pou Chen Group', 'Rp 6.000.000 - 7.500.000', 'Serang Regency')"
+                                class="bookmark-btn p-2 rounded-xl text-slate-300 hover:text-brand-purple hover:bg-purple-50 transition">
+                                <i data-lucide="bookmark"
+                                    class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="mt-4 space-y-2 text-xs text-slate-600 font-normal">
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="clock"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Penuh waktu</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="map-pin"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                On-site • Serang Regency</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="briefcase"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Min.
+                                Fresh Grad</p>
+                            <p
+                                class="flex items-center gap-2 font-semibold text-slate-800"><i
+                                    data-lucide="banknote"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Rp
+                                6.000.000 - 7.500.000</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                        <span
+                            class="text-slate-400 flex items-center gap-1">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Aktif 12j lalu
+                        </span>
+                        <button
+                            onclick="applyJob('Public Relation Staff', 'Pou Chen')"
+                            class="bg-brand-purple hover:bg-brand-darkPurple text-white px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                            <span>AI Apply</span> ⚡
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div
+                    class="job-card bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300 flex flex-col justify-between relative group"
+                    data-id="job-5"
+                    data-title="Funding Operations Specialist"
+                    data-company="Finture" data-location="Jakarta Selatan"
+                    data-salary="Rp 8.000.000 - 12.000.000" data-tilt
+                    data-tilt-max="5" data-tilt-speed="400">
+                    <div>
+                        <div class="h-7 mb-3"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center font-black text-amber-600 text-xs border border-amber-200 shadow-sm">Fint</div>
+                                <div>
+                                    <h4
+                                        class="font-bold text-slate-900 group-hover:text-brand-purple transition leading-tight text-sm">Funding
+                                        Operations Spec...</h4>
+                                    <p
+                                        class="text-xs text-slate-500 font-medium">Finture</p>
+                                </div>
+                            </div>
+                            <button
+                                onclick="toggleSaveJob('job-5', 'Funding Operations Spec...', 'Finture', 'Rp 8.000.000 - 12.000.000', 'Jakarta Selatan')"
+                                class="bookmark-btn p-2 rounded-xl text-slate-300 hover:text-brand-purple hover:bg-purple-50 transition">
+                                <i data-lucide="bookmark"
+                                    class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="mt-4 space-y-2 text-xs text-slate-600 font-normal">
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="clock"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Penuh waktu</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="map-pin"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                On-site • Jakarta Selatan</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="briefcase"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                1-3
+                                Tahun Pengalaman</p>
+                            <p
+                                class="flex items-center gap-2 font-semibold text-slate-800"><i
+                                    data-lucide="banknote"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Rp
+                                8.000.000 - 12.000.000</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                        <span
+                            class="text-slate-400 flex items-center gap-1">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Aktif 2 hari lalu
+                        </span>
+                        <button
+                            onclick="applyJob('Funding Operations', 'Finture')"
+                            class="bg-brand-purple hover:bg-brand-darkPurple text-white px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                            <span>AI Apply</span> ⚡
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div
+                    class="job-card bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-200 transition-all duration-300 flex flex-col justify-between relative group"
+                    data-id="job-6"
+                    data-title="Videographer & Content Creator"
+                    data-company="FACETOLOGY"
+                    data-location="Jakarta Selatan"
+                    data-salary="Gaji Dirahasiakan" data-tilt
+                    data-tilt-max="5"
+                    data-tilt-speed="400">
+                    <div>
+                        <div class="h-7 mb-3"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center font-black text-rose-500 text-xs border border-rose-100 shadow-sm">FC</div>
+                                <div>
+                                    <h4
+                                        class="font-bold text-slate-900 group-hover:text-brand-purple transition leading-tight text-sm">Videographer</h4>
+                                    <p
+                                        class="text-xs text-slate-500 font-medium flex items-center gap-1">FACETOLOGY
+                                        <i data-lucide="check-circle"
+                                            class="w-3.5 h-3.5 text-emerald-500 fill-emerald-100"></i></p>
+                                </div>
+                            </div>
+                            <button
+                                onclick="toggleSaveJob('job-6', 'Videographer', 'FACETOLOGY', 'Gaji Dirahasiakan', 'Jakarta Selatan')"
+                                class="bookmark-btn p-2 rounded-xl text-slate-300 hover:text-brand-purple hover:bg-purple-50 transition">
+                                <i data-lucide="bookmark"
+                                    class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="mt-4 space-y-2 text-xs text-slate-600 font-normal">
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="clock"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Penuh waktu</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="map-pin"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                On-site • Jakarta Selatan</p>
+                            <p class="flex items-center gap-2"><i
+                                    data-lucide="briefcase"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                1-3
+                                Tahun Pengalaman</p>
+                            <p
+                                class="flex items-center gap-2 font-semibold text-slate-800"><i
+                                    data-lucide="banknote"
+                                    class="w-3.5 h-3.5 text-slate-400"></i>
+                                Gaji
+                                Dirahasiakan</p>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                        <span
+                            class="text-slate-400 flex items-center gap-1">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Aktif 2j lalu
+                        </span>
+                        <button
+                            onclick="applyJob('Videographer', 'FACETOLOGY')"
+                            class="bg-brand-purple hover:bg-brand-darkPurple text-white px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95">
+                            <span>AI Apply</span> ⚡
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner Call To Action -->
+            <div
+                class="gsap-scroll-section mt-12 bg-gradient-to-r from-indigo-50 to-purple-50 border border-purple-100 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                <div class="flex items-center gap-4 text-left">
+                    <div
+                        class="w-14 h-14 bg-brand-purple text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-purple-600/30">
+                        <i data-lucide="zap"
+                            class="w-7 h-7 text-brand-yellow"></i>
+                    </div>
+                    <div>
+                        <h4
+                            class="font-bold text-slate-900 text-base md:text-lg">Lamar
+                            lebih awal, dapatkan respon hingga 3x lebih
+                            cepat.</h4>
+                        <p
+                            class="text-xs md:text-sm text-slate-600 mt-1">Jangan
+                            lewatkan peluang karier impianmu tanpa pusing
+                            urusan
+                            format berkas administrasi.</p>
+                    </div>
+                </div>
+                <button onclick="openUploadModal()"
+                    class="bg-brand-purple hover:bg-brand-darkPurple text-white text-xs md:text-sm font-bold px-7 py-3.5 rounded-2xl transition-all duration-200 shadow-md hover:shadow-purple-600/20 whitespace-nowrap active:scale-95">
+                    Mulai Setup Profil AI Gratis
+                </button>
+            </div>
+
+            <div class="text-center mt-10">
+                <button
+                    onclick="showToast('Memuat 12 lowongan terverifikasi berikutnya...')"
+                    class="bg-white border border-slate-300 text-brand-purple font-bold px-8 py-3 rounded-2xl text-sm hover:bg-purple-50 hover:border-brand-purple transition shadow-sm inline-flex items-center gap-2 active:scale-95">
+                    <span>Lihat Lebih Banyak Lowongan</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </main>
+
+        <!-- MODAL INTERAKTIF: AI APPLY FLOW -->
+        <div id="aiModal"
+            class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 transition-all duration-300">
+            <div
+                class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative transform transition-all scale-95 opacity-0 border border-slate-100"
+                id="modalContent">
+                <button onclick="closeModal()"
+                    class="absolute right-5 top-5 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-1.5 rounded-full transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <div class="text-center mb-6">
+                    <div
+                        class="w-14 h-14 bg-purple-100 text-brand-purple rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+                        <i data-lucide="sparkles" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900">AI
+                        1-Click
+                        Application</h3>
+                    <p class="text-xs text-slate-500 mt-1">Mengirimkan
+                        berkas
+                        terkurasi ke <span id="modalTargetCompany"
+                            class="font-bold text-brand-purple">Company</span>
+                        untuk posisi <span id="modalTargetRole"
+                            class="font-bold text-slate-800">Role</span></p>
+                </div>
+
+                <div
+                    class="space-y-3 bg-slate-50 border border-slate-100 p-4 rounded-2xl text-xs mb-6">
+                    <div
+                        class="flex items-center justify-between text-slate-700">
+                        <span class="flex items-center gap-2 font-medium"><i
+                                data-lucide="file-check"
+                                class="w-4 h-4 text-emerald-500"></i> CV
+                            Standar
+                            ATS</span>
+                        <span
+                            class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">Auto-Tailored
+                            ✓</span>
+                    </div>
+                    <div
+                        class="flex items-center justify-between text-slate-700">
+                        <span class="flex items-center gap-2 font-medium"><i
+                                data-lucide="mail-check"
+                                class="w-4 h-4 text-emerald-500"></i>
+                            Personalized Cover Letter</span>
+                        <span
+                            class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">Generated
+                            ✓</span>
+                    </div>
+                    <div
+                        class="flex items-center justify-between text-slate-700">
+                        <span class="flex items-center gap-2 font-medium"><i
+                                data-lucide="target"
+                                class="w-4 h-4 text-brand-purple"></i> ATS
+                            Score
+                            & Relevance Match</span>
+                        <span
+                            class="text-brand-purple font-bold bg-purple-100 px-2 py-0.5 rounded-md">96%
+                            Sangat Cocok</span>
+                    </div>
+                </div>
+
+                <!-- Simulation Processing Container -->
+                <div id="aiProcessingState"
+                    class="hidden text-center py-4 space-y-3">
+                    <div
+                        class="w-10 h-10 border-4 border-brand-purple border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p class="text-xs text-slate-600 font-semibold"
+                        id="aiProcessText">Menyesuaikan profil dengan kata
+                        kunci
+                        lowongan...</p>
+                </div>
+
+                <button id="btnSendApply" onclick="executeAiApply()"
+                    class="w-full bg-brand-purple hover:bg-brand-darkPurple text-white py-3.5 rounded-2xl font-bold text-sm transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 active:scale-95">
+                    <span>Kirim Lamaran Sekarang (1-Click)</span> 🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL: MASUK & DAFTAR (AUTH) -->
+        <div id="authModal"
+            class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 transition-all duration-300">
+            <div
+                class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl relative border border-slate-100">
+                <button onclick="closeAuthModal()"
+                    class="absolute right-5 top-5 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-1.5 rounded-full transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <div class="flex items-center justify-center gap-2 mb-6">
+                    <span
+                        class="text-2xl font-black text-brand-purple tracking-tight">Lokers<span
+                            class="text-brand-yellow">!</span></span>
+                </div>
+
+                <!-- Tab Buttons -->
+                <div
+                    class="flex p-1 bg-slate-100 rounded-2xl mb-6 text-xs font-bold">
+                    <button id="tabLoginBtn"
+                        onclick="switchAuthTab('login')"
+                        class="flex-1 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition">Masuk
+                        Akun</button>
+                    <button id="tabRegisterBtn"
+                        onclick="switchAuthTab('register')"
+                        class="flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-900 transition">Daftar
+                        Baru</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm"
+                    onsubmit="handleAuthSubmit(event, 'login')"
+                    class="space-y-4 text-xs">
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1.5">Email</label>
+                        <input type="email" required
+                            placeholder="nama@email.com"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1.5">Kata
+                            Sandi</label>
+                        <input type="password" required
+                            placeholder="••••••••"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                    <div
+                        class="flex items-center justify-between text-[11px]">
+                        <label
+                            class="flex items-center gap-1.5 text-slate-500 cursor-pointer">
+                            <input type="checkbox"
+                                class="accent-brand-purple rounded"> Ingat
+                            saya
+                        </label>
+                        <a href="#"
+                            class="text-brand-purple font-semibold hover:underline">Lupa
+                            sandi?</a>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-brand-purple hover:bg-brand-darkPurple text-white py-3 rounded-xl font-bold text-sm transition shadow-md shadow-purple-600/20">
+                        Masuk ke Akun
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm"
+                    onsubmit="handleAuthSubmit(event, 'register')"
+                    class="space-y-3.5 text-xs hidden">
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1">Nama
+                            Lengkap</label>
+                        <input type="text" required
+                            placeholder="Cth: Budi Pratama"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1">Email</label>
+                        <input type="email" required
+                            placeholder="nama@email.com"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1">Kata
+                            Sandi</label>
+                        <input type="password" required
+                            placeholder="Minimal 8 karakter"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                    <p class="text-[10px] text-slate-500 leading-tight">
+                        Dengan mendaftar, kamu menyetujui Ketentuan Layanan
+                        dan
+                        Kebijakan Privasi data AI Lokers.
+                    </p>
+                    <button type="submit"
+                        class="w-full bg-brand-purple hover:bg-brand-darkPurple text-white py-3 rounded-xl font-bold text-sm transition shadow-md shadow-purple-600/20">
+                        Buat Akun Sekarang
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: UPLOAD DATA SEKALI (AI PROFILE WIZARD) -->
+        <div id="uploadDataModal"
+            class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 transition-all duration-300">
+            <div
+                class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative border border-slate-100">
+                <button onclick="closeUploadModal()"
+                    class="absolute right-5 top-5 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-1.5 rounded-full transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <div class="text-center mb-6">
+                    <div
+                        class="w-12 h-12 bg-yellow-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900">Setup
+                        Master Profil AI</h3>
+                    <p class="text-xs text-slate-500 mt-1">Upload data dasar
+                        sekali saja, AI kami yang akan melamar
+                        seterusnya.</p>
+                </div>
+
+                <div
+                    class="border-2 border-dashed border-purple-200 bg-purple-50/50 hover:bg-purple-50 rounded-2xl p-6 text-center cursor-pointer transition mb-4 group"
+                    onclick="document.getElementById('cvFileInput').click()">
+                    <input type="file" id="cvFileInput" class="hidden"
+                        accept=".pdf,.doc,.docx"
+                        onchange="handleFileSelected(this)">
+                    <i data-lucide="file-up"
+                        class="w-10 h-10 text-brand-purple mx-auto mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p id="fileUploadLabel"
+                        class="text-xs font-bold text-slate-800">Klik untuk
+                        upload CV lama / Resume (.PDF / .DOCX)</p>
+                    <p class="text-[10px] text-slate-500 mt-1">AI otomatis
+                        mengekstrak riwayat kerja & keahlian Anda</p>
+                </div>
+
+                <div class="space-y-3 text-xs mb-6">
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1">Target
+                            Posisi Pekerjaan</label>
+                        <input type="text"
+                            placeholder="Cth: Video Editor, Frontend Engineer, Marketing"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                    <div>
+                        <label
+                            class="block font-semibold text-slate-700 mb-1">Ekspektasi
+                            Gaji Minimal (Opsional)</label>
+                        <input type="text" placeholder="Cth: Rp 6.000.000"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple">
+                    </div>
+                </div>
+
+                <button onclick="saveUserProfile()"
+                    class="w-full bg-brand-purple hover:bg-brand-darkPurple text-white py-3.5 rounded-2xl font-bold text-sm transition shadow-lg shadow-purple-600/30">
+                    Simpan Master Data AI ⚡
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE-OVER DRAWER: LOWONGAN TERSIMPAN -->
+        <div id="savedDrawerBackdrop" onclick="closeSavedDrawer()"
+            class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
+        <div id="savedDrawer"
+            class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+            <div
+                class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-xl bg-purple-100 text-brand-purple flex items-center justify-center">
+                        <i data-lucide="bookmark" class="w-4 h-4"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Lowongan
+                        Tersimpan</h3>
+                </div>
+                <button onclick="closeSavedDrawer()"
+                    class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-200 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="savedJobsList"
+                class="flex-1 overflow-y-auto p-5 space-y-3 custom-scrollbar">
+                <!-- Konten dinamis lowongan tersimpan di sini -->
+            </div>
+
+            <div
+                class="p-4 border-t border-slate-100 bg-slate-50 text-center">
+                <p class="text-[11px] text-slate-500 mb-2">Simpan lowongan
+                    untuk
+                    dilamar nanti atau langsung gunakan AI 1-Click
+                    Apply.</p>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer id="perusahaan"
+            class="gsap-scroll-section bg-white border-t border-slate-200 mt-24 pt-14 pb-8 px-4 md:px-12 text-slate-600 text-xs">
+            <div
+                class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
+                <div class="md:col-span-2 space-y-3">
+                    <span
+                        class="text-2xl font-black text-brand-purple tracking-tight">Lokers<span
+                            class="text-brand-yellow">!</span></span>
+                    <p class="font-bold text-slate-800 text-sm">Platform
+                        Karir
+                        Cerdas Terintegrasi AI Generatif</p>
+                    <p class="text-slate-500 leading-relaxed text-xs">
+                        Mengeliminasi burnout administrasi pencari kerja
+                        dengan
+                        otomatisasi pembuatan berkas berstandar ATS industri
+                        serta mempercepat proses screening awal bagi HRD.
+                    </p>
+                    <div class="flex items-center gap-2 pt-2">
+                    </div>
+                </div>
+
+                <div>
+                    <h5
+                        class="font-bold text-slate-800 mb-3 text-sm">Loker</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Berdasarkan
+                                Industri</a></li>
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Berdasarkan
+                                Lokasi</a></li>
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Loker
+                                Full-time</a></li>
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Loker
+                                Magang / Internship</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="font-bold text-slate-800 mb-3 text-sm">Untuk
+                        Perusahaan</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Pasang
+                                Loker (Pay-to-Post)</a></li>
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">AI
+                                Pre-Screening Engine</a></li>
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Integrasi
+                                HRIS & ATS</a></li>
+                        <li><a href="#"
+                                class="hover:text-brand-purple transition">Jadwalkan
+                                Demo HR</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5
+                        class="font-bold text-slate-800 mb-3 text-sm">Hubungi
+                        &
+                        Komunitas</h5>
+                    <div class="flex items-center gap-2 mb-4">
+                        <a href="https://linkedin.com" target="_blank"
+                            rel="noopener noreferrer"
+                            class="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm">
+                            <svg class="w-4 h-4 fill-current"
+                                viewBox="0 0 24 24"><path
+                                    d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75c.97 0 1.76.78 1.76 1.75s-.79 1.76-1.76 1.76m1.4 9.74v-8.37H5.06v8.37h2.8z" /></svg>
+                        </a>
+                        <a href="https://instagram.com" target="_blank"
+                            rel="noopener noreferrer"
+                            class="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-gradient-to-tr hover:from-[#F58529] hover:via-[#DD2A7B] hover:to-[#8134AF] hover:text-white hover:border-transparent transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm">
+                            <svg
+                                class="w-4 h-4 fill-none stroke-current stroke-2 stroke-linecap-round stroke-linejoin-round"
+                                viewBox="0 0 24 24"><rect width="20"
+                                    height="20"
+                                    x="2" y="2" rx="5" ry="5"></rect><path
+                                    d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line
+                                    x1="17.5" x2="17.51" y1="6.5"
+                                    y2="6.5"></line></svg>
+                        </a>
+                        <a href="https://x.com" target="_blank"
+                            rel="noopener noreferrer"
+                            class="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-black hover:text-white hover:border-black transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm">
+                            <svg class="w-3.5 h-3.5 fill-current"
+                                viewBox="0 0 24 24"><path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                        </a>
+                    </div>
+                    <p class="text-slate-400 text-[11px]">© 2026 Lokers Inc.
+                        All
+                        rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- JAVASCRIPT LOGIC & INTERACTIONS -->
+        <script>
+            // Inisialisasi Ikon Lucide
+            lucide.createIcons();
+
+            // GSAP Animations
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.utils.toArray('.gsap-scroll-section').forEach(section => {
+                gsap.fromTo(section, 
+                    { opacity: 0, y: 16 }, 
+                    {
+                        opacity: 1, 
+                        y: 0, 
+                        duration: 0.4, 
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 92%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            gsap.fromTo(".job-card", 
+                { opacity: 0, y: 16 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.35,
+                    stagger: 0.06,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: "#jobs-container",
+                        start: "top 90%",
+                        once: true
+                    }
+                }
+            );
+
+            gsap.to("#floating-badge-1", {
+                y: 50,
+                rotationZ: 25,
+                scrollTrigger: {
+                    trigger: "header",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            });
+
+            gsap.to("#floating-badge-2", {
+                y: -30,
+                rotationZ: -25,
+                scrollTrigger: {
+                    trigger: "header",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            });
+
+            gsap.to("#floating-badge-3", {
+                y: 35,
+                rotationZ: -18,
+                scrollTrigger: {
+                    trigger: "header",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1.2
+                }
+            });
+            gsap.to("#floating-badge-4", {
+                y: 40,
+                rotationZ: 16,
+                scrollTrigger: {
+                    trigger: "header",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1.2
+                }
+            });
+
+            // TOAST SYSTEM
+            let toastTimer;
+            function showToast(message) {
+                const toast = document.getElementById('toastNotification');
+                document.getElementById('toastMessage').innerText = message;
+                
+                toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+                }, 3000);
+            }
+
+            // MODAL APPLY LOGIC
+            let currentApplyingRole = '';
+            let currentApplyingCompany = '';
+
+            function applyJob(role, company) {
+                currentApplyingRole = role;
+                currentApplyingCompany = company;
+                document.getElementById('modalTargetRole').innerText = role;
+                document.getElementById('modalTargetCompany').innerText = company;
+                
+                const modal = document.getElementById('aiModal');
+                const content = document.getElementById('modalContent');
+                
+                // Reset state
+                document.getElementById('aiProcessingState').classList.add('hidden');
+                document.getElementById('btnSendApply').classList.remove('hidden');
+                
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('aiModal');
+                const content = document.getElementById('modalContent');
+                content.classList.add('scale-95', 'opacity-0');
+                content.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => modal.classList.add('hidden'), 200);
+            }
+
+            function executeAiApply() {
+                const btn = document.getElementById('btnSendApply');
+                const processing = document.getElementById('aiProcessingState');
+                const processText = document.getElementById('aiProcessText');
+                
+                btn.classList.add('hidden');
+                processing.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    processText.innerText = "Meracik CV ATS & Cover Letter spesifik...";
+                }, 800);
+
+                setTimeout(() => {
+                    processText.innerText = "Mengirimkan langsung ke inbox HRD " + currentApplyingCompany + "...";
+                }, 1600);
+
+                setTimeout(() => {
+                    closeModal();
+                    showToast(`⚡ Sukses! Lamaran AI untuk posisi ${currentApplyingRole} berhasil terkirim.`);
+                }, 2400);
+            }
+
+            // AUTH MODAL (LOGIN & REGISTER)
+            function openAuthModal(tab = 'login') {
+                const modal = document.getElementById('authModal');
+                modal.classList.remove('hidden');
+                switchAuthTab(tab);
+            }
+
+            function closeAuthModal() {
+                document.getElementById('authModal').classList.add('hidden');
+            }
+
+            function switchAuthTab(tab) {
+                const tabLogin = document.getElementById('tabLoginBtn');
+                const tabRegister = document.getElementById('tabRegisterBtn');
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+
+                if (tab === 'login') {
+                    tabLogin.className = "flex-1 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition";
+                    tabRegister.className = "flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-900 transition";
+                    loginForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                } else {
+                    tabRegister.className = "flex-1 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition";
+                    tabLogin.className = "flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-900 transition";
+                    registerForm.classList.remove('hidden');
+                    loginForm.classList.add('hidden');
+                }
+            }
+
+            function handleAuthSubmit(e, type) {
+                e.preventDefault();
+                closeAuthModal();
+                showToast(type === 'login' ? '🎉 Berhasil masuk ke akun Lokers!' : '🎉 Akun berhasil dibuat! Silakan atur profil master AI.');
+            }
+
+            // SAVED JOBS (BOOKMARK) SYSTEM
+            let savedJobs = [];
+
+            function toggleSaveJob(id, title, company, salary, location) {
+                const index = savedJobs.findIndex(j => j.id === id);
+                const card = document.querySelector(`[data-id="${id}"]`);
+                const btn = card ? card.querySelector('.bookmark-btn') : null;
+
+                if (index > -1) {
+                    savedJobs.splice(index, 1);
+                    if (btn) {
+                        btn.classList.remove('text-brand-purple', 'bg-purple-100');
+                        btn.classList.add('text-slate-300');
+                    }
+                    showToast('Lowongan dihapus dari daftar tersimpan');
+                } else {
+                    savedJobs.push({ id, title, company, salary, location });
+                    if (btn) {
+                        btn.classList.add('text-brand-purple', 'bg-purple-100');
+                        btn.classList.remove('text-slate-300');
+                    }
+                    showToast('⭐ Lowongan berhasil disimpan!');
+                }
+                updateSavedJobsUI();
+            }
+
+            function updateSavedJobsUI() {
+                const badge = document.getElementById('savedBadgeCount');
+                badge.innerText = savedJobs.length;
+                
+                const listContainer = document.getElementById('savedJobsList');
+                if (savedJobs.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="text-center py-16 text-slate-400">
+                            <i data-lucide="bookmark-x" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
+                            <p class="text-xs font-medium">Belum ada lowongan yang disimpan</p>
+                        </div>
+                    `;
+                } else {
+                    listContainer.innerHTML = savedJobs.map(job => `
+                        <div class="p-3.5 rounded-2xl border border-slate-200 hover:border-purple-200 bg-white shadow-sm flex items-center justify-between gap-3 text-xs">
+                            <div>
+                                <h5 class="font-bold text-slate-900">${job.title}</h5>
+                                <p class="text-[11px] text-slate-500">${job.company} • ${job.location}</p>
+                                <p class="text-[11px] font-semibold text-brand-purple mt-0.5">${job.salary}</p>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button onclick="applyJob('${job.title}', '${job.company}')" class="bg-brand-purple hover:bg-brand-darkPurple text-white px-2.5 py-1.5 rounded-lg font-bold text-[10px]">
+                                    AI Apply ⚡
+                                </button>
+                                <button onclick="toggleSaveJob('${job.id}', '${job.title}', '${job.company}', '${job.salary}', '${job.location}')" class="text-slate-400 hover:text-rose-500 p-1">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                lucide.createIcons();
+            }
+
+            function openSavedDrawer() {
+                updateSavedJobsUI();
+                document.getElementById('savedDrawerBackdrop').classList.remove('hidden');
+                document.getElementById('savedDrawer').classList.remove('translate-x-full');
+            }
+
+            function closeSavedDrawer() {
+                document.getElementById('savedDrawerBackdrop').classList.add('hidden');
+                document.getElementById('savedDrawer').classList.add('translate-x-full');
+            }
+
+            // UPLOAD MASTER DATA MODAL
+            function openUploadModal() {
+                document.getElementById('uploadDataModal').classList.remove('hidden');
+            }
+
+            function closeUploadModal() {
+                document.getElementById('uploadDataModal').classList.add('hidden');
+            }
+
+            function handleFileSelected(input) {
+                if (input.files && input.files[0]) {
+                    document.getElementById('fileUploadLabel').innerText = `✓ File siap: ${input.files[0].name}`;
+                    showToast('File CV terdeteksi! Siap dianalisis AI.');
+                }
+            }
+
+            function saveUserProfile() {
+                closeUploadModal();
+                showToast('🚀 Profil Master AI tersimpan! Kamu siap melamar dalam 1 klik.');
+            }
+
+            // FILTER & SEARCH HANDLER (UI Mockup)
+            function handleSearch(val) {
+                const query = val.toLowerCase();
+                const cards = document.querySelectorAll('.job-card');
+                cards.forEach(card => {
+                    const title = card.getAttribute('data-title').toLowerCase();
+                    const company = card.getAttribute('data-company').toLowerCase();
+                    if (title.includes(query) || company.includes(query)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            function filterCategory(cat) {
+                showToast(`Memfilter lowongan kategori: ${cat.toUpperCase()}`);
+            }
+
+            // HANDLER ANIMASI INDIKATOR SCROLL KATEGORI
+            function handleCategoryScroll(el) {
+                const scrollTop = el.scrollTop;
+                const scrollHeight = el.scrollHeight - el.clientHeight;
+                const scrollPercentage = scrollHeight > 0 ? Math.round((scrollTop / scrollHeight) * 100) : 0;
+                
+                const indicator = document.getElementById('categoryScrollIndicator');
+                if (indicator) {
+                    // Mengubah tinggi indikator vertikal sesuai posisi scroll
+                    indicator.style.height = scrollPercentage + '%';
+                }
+            }
+
+            function openCategoryModal() {
+                const modal = document.getElementById('categoryModal');
+                const content = document.getElementById('categoryModalContent');
+                const grid = document.getElementById('categoryGridList');
+                
+                document.getElementById('categorySearchInput').value = '';
+                filterModalCategories('');
+                
+                // Reset scroll posisi & indikator progress
+                if (grid) {
+                    grid.scrollTop = 0;
+                    handleCategoryScroll(grid);
+                }
+                
+                modal.classList.remove('hidden');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }, 15);
+            }
+
+            function closeCategoryModal() {
+                const modal = document.getElementById('categoryModal');
+                const content = document.getElementById('categoryModalContent');
+                
+                content.classList.add('scale-95', 'opacity-0');
+                content.classList.remove('scale-100', 'opacity-100');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 200);
+            }
+
+            // Handler agar klik di luar kotak modal menutup pop-up
+            window.addEventListener('click', function(e) {
+                const modal = document.getElementById('categoryModal');
+                const content = document.getElementById('categoryModalContent');
+                if (!modal.classList.contains('hidden') && e.target === modal) {
+                    closeCategoryModal();
+                }
+            });
+
+            function selectCategory(categoryName) {
+                closeCategoryModal();
+                const mainSearch = document.getElementById('searchInput');
+                if (mainSearch) {
+                    mainSearch.value = categoryName;
+                    handleSearch(categoryName);
+                }
+                showToast(`Menampilkan lowongan: ${categoryName}`);
+            }
+
+            function filterModalCategories(query) {
+                const q = query.toLowerCase();
+                const items = document.querySelectorAll('.cat-item');
+                items.forEach(item => {
+                    const text = item.innerText.toLowerCase();
+                    if (text.includes(q)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+        </script>
+        <!-- MODAL: PILIHAN 30+ KATEGORI (INDIKATOR VERTIKAL KANAN) -->
+        <div id="categoryModal"
+            class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 transition-opacity duration-300 pointer-events-none">
+            <div id="categoryModalContent"
+                class="bg-white rounded-3xl max-w-3xl w-full p-6 md:p-8 shadow-2xl relative border border-slate-100 max-h-[88vh] flex flex-col transform transition-all duration-300 scale-95 opacity-0 pointer-events-auto overflow-hidden">
+
+                <!-- Modal Header -->
+                <div
+                    class="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="layout-grid"
+                                class="w-5 h-5 text-amber-800"></i>
+                        </div>
+                        <div>
+                            <h3
+                                class="text-lg font-bold text-slate-900">Eksplor
+                                30+ Bidang Profesi</h3>
+                            <p class="text-xs text-slate-500">Pilih industri
+                                karier untuk menemukan lowongan yang
+                                sesuai</p>
+                        </div>
+                    </div>
+                    <button onclick="closeCategoryModal()"
+                        class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition active:scale-90 shrink-0">
+                        <i data-lucide="x"
+                            class="w-4 h-4 text-slate-600"></i>
+                    </button>
+                </div>
+
+                <!-- Search Kategori Internal -->
+                <div class="py-4 shrink-0">
+                    <div class="relative">
+                        <i data-lucide="search"
+                            class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="categorySearchInput"
+                            onkeyup="filterModalCategories(this.value)"
+                            placeholder="Cari nama bidang atau profesi..."
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white transition">
+                    </div>
+                </div>
+
+                <!-- Wrapper Konten Grid & Indikator Vertikal Kanan -->
+                <div class="flex-1 flex gap-3 overflow-hidden relative">
+                    <!-- Grid 30+ Profesi -->
+                    <div id="categoryGridList"
+                        onscroll="handleCategoryScroll(this)"
+                        class="overflow-y-auto custom-scrollbar flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-xs font-medium overscroll-contain pr-1">
+
+                        <button
+                            onclick="selectCategory('Software Engineering')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">💻
+                                Software Engineering</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">840+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('UI/UX & Product Design')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🎨
+                                UI/UX & Design</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">320+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Data Science & AI')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📊
+                                Data Science & AI</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">290+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Cyber Security & DevOps')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🛡️
+                                DevOps & Security</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">140+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Quality Assurance / QA')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🧪
+                                QA & Tester</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">180+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Product Management')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🚀
+                                Product Management</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">210+
+                                Loker</span>
+                        </button>
+
+                        <button
+                            onclick="selectCategory('Digital Marketing')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📈
+                                Digital Marketing</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">520+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Social Media & Content')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📱
+                                Social Media & Creator</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">410+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('SEO & Copywriting')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">✍️
+                                SEO & Copywriting</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">190+
+                                Loker</span>
+                        </button>
+                        <button onclick="selectCategory('Sales & BD')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">💼
+                                Sales & BD</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">670+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Account Executive')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🤝
+                                Account Executive</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">230+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Public Relations / PR')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📣
+                                Public Relations / PR</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">160+
+                                Loker</span>
+                        </button>
+
+                        <button
+                            onclick="selectCategory('Finance & Accounting')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">💰
+                                Finance & Accounting</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">450+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('HR & Talent Acquisition')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">👥
+                                HR & Talent</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">380+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Legal & Compliance')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">⚖️
+                                Legal & Compliance</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">120+
+                                Loker</span>
+                        </button>
+                        <button onclick="selectCategory('Tax & Audit')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📑
+                                Tax & Audit</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">170+
+                                Loker</span>
+                        </button>
+
+                        <button onclick="selectCategory('Operations & GA')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">⚙️
+                                Operations & GA</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">510+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Supply Chain & Logistik')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📦
+                                Supply Chain</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">340+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Procurement / Pembelian')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🛍️
+                                Procurement</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">190+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Customer Success / CS')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🎧
+                                Customer Success / CS</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">620+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Video Editor & Motion')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🎬
+                                Video Editor & Motion</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">280+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Graphic Design & Visual')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🖌️
+                                Graphic Design</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">350+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Fotografer & Videografer')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">📸
+                                Fotografi & Video</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">130+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('3D Artist & Animator')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🕹️
+                                3D & Animasi</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">95+
+                                Loker</span>
+                        </button>
+
+                        <button
+                            onclick="selectCategory('Arsitektur & Interior')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🏛️
+                                Arsitektur & Interior</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">160+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Teknik Sipil & Mesin')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🏗️
+                                Teknik Sipil & Mesin</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">240+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Hospitality & F&B')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">☕
+                                Hospitality & F&B</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">410+
+                                Loker</span>
+                        </button>
+                        <button onclick="selectCategory('Medis & Farmasi')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🏥
+                                Medis & Farmasi</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">180+
+                                Loker</span>
+                        </button>
+                        <button onclick="selectCategory('Guru & Edukator')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🎓
+                                Guru & Edukator</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">220+
+                                Loker</span>
+                        </button>
+                        <button
+                            onclick="selectCategory('Penerjemah / Bahasa')"
+                            class="cat-item p-3 bg-slate-50 hover:bg-purple-50 hover:text-brand-purple rounded-xl border border-slate-200/80 text-left transition flex items-center justify-between group">
+                            <span
+                                class="group-hover:translate-x-0.5 transition-transform">🌐
+                                Penerjemah / Bahasa</span>
+                            <span
+                                class="text-[10px] text-slate-400 font-normal">85+
+                                Loker</span>
+                        </button>
+                    </div>
+
+                    <!-- Dual-Line Vertical Scroll Indicator (Ujung Kanan) -->
+                    <div
+                        class="w-1.5 bg-slate-100 rounded-full my-1 relative overflow-hidden shrink-0 flex flex-col justify-start">
+                        <!-- Bar Indikator Berwarna yang Turun/Mengisi saat di-scroll -->
+                        <div id="categoryScrollIndicator"
+                            class="w-full bg-gradient-to-b from-brand-purple to-brand-yellow rounded-full transition-all duration-75 h-0"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
