@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 15mm 18mm 15mm 18mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      font-family: {{styling.fontFamily}}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1f2937;
+      line-height: {{styling.lineSpacing}};
+      font-size: {{styling.fontSize}};
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      text-align: left;
+      border-bottom: 2px solid {{styling.accentColor}};
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      margin: 0 0 4px 0;
+      font-size: 20pt;
+      color: {{styling.accentColor}};
+      letter-spacing: -0.5px;
+    }
+    .header .meta {
+      font-size: 9pt;
+      color: #4b5563;
+    }
+    .section-title {
+      font-size: 11pt;
+      font-weight: bold;
+      color: {{styling.accentColor}};
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 2px;
+    }
+    .item-block {
+      break-inside: avoid;
+      margin-bottom: 8px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+    .item-sub {
+      font-size: 9pt;
+      color: #6b7280;
+      font-style: italic;
+    }
+    ul {
+      margin: 4px 0 0 16px;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 2px;
+    }
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .skill-tag {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      padding: 2px 6px;
+      font-size: 8.5pt;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>{{resume.personal_info.full_name}}</h1>
+    <div class="meta">
+      {{resume.personal_info.email}} | {{resume.personal_info.phone}} | {{resume.personal_info.location}}
+      {{#if resume.personal_info.headline}} | {{resume.personal_info.headline}}{{/if}}
+    </div>
+  </div>
+
+  {{#if resume.experiences.length}}
+  <div class="section-title">Pengalaman Kerja</div>
+  {{#each resume.experiences}}
+  <div class="item-block">
+    <div class="item-header">
+      <span>{{this.role}} — {{this.company}}</span>
+      <span>{{this.period}}</span>
+    </div>
+    <ul>
+      {{#each this.highlights}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/each}}
+  {{/if}}
+
+  {{#if resume.education.length}}
+  <div class="section-title">Pendidikan</div>
+  {{#each resume.education}}
+  <div class="item-block">
+    <div class="item-header">
+      <span>{{this.institution}}</span>
+      <span>{{this.graduation_year}}</span>
+    </div>
+    <div class="item-sub">{{this.degree}} - {{this.field_of_study}}</div>
+  </div>
+  {{/each}}
+  {{/if}}
+
+  {{#if resume.skills.length}}
+  <div class="section-title">Keahlian & Kompetensi</div>
+  <div class="item-block skills-container">
+    {{#each resume.skills}}
+    <span class="skill-tag">{{this}}</span>
+    {{/each}}
+  </div>
+  {{/if}}
+</body>
+</html>
