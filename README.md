@@ -1,5 +1,3 @@
-
-=======
 # 🚀 OneApply AI — Next-Gen AI-Powered Job Portal
 
 <div align="center">
