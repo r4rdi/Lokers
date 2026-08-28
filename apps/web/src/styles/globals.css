@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 html,
 body {
   padding: 0;

@@ -1,29 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useResumeStore } from '@/stores/useResumeStore';
 import { 
   User, 
   Mail, 
   Phone, 
-  MapPin, 
   Briefcase, 
   Wrench, 
   Plus, 
   X, 
   ArrowRight, 
   Sparkles, 
-  CheckCircle2, 
-  GraduationCap 
+  FileCheck, 
+  Zap 
 } from 'lucide-react';
 
 export default function ReviewPage() {
   const router = useRouter();
   const { resumeData, setResumeData } = useResumeStore();
   const [newSkill, setNewSkill] = useState('');
+  const [scrollY, setScrollY] = useState(0);
 
-  // Fallback state jika direct access tanpa upload
+  // Parallax scroll listener
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Fallback data default yang aman untuk tipe ResumeData
   const personal = resumeData?.personal_info || {
     full_name: 'Rafi Ardiansyah',
     headline: 'Software Engineer',
@@ -58,9 +76,22 @@ export default function ReviewPage() {
     'JavaScript', 'TypeScript', 'Node.js', 'React', 'Next.js', 'Express', 'Tailwind CSS', 'PostgreSQL', 'Docker', 'REST API'
   ];
 
-  const handleInputChange = (field: string, val: string) => {
+  const updateStore = (updatedFields: {
+    personal_info?: typeof personal;
+    experiences?: typeof experiences;
+    skills?: typeof skills;
+    education?: typeof education;
+  }) => {
     setResumeData({
-      ...resumeData,
+      personal_info: updatedFields.personal_info || personal,
+      experiences: updatedFields.experiences || experiences,
+      skills: updatedFields.skills || skills,
+      education: updatedFields.education || education,
+    });
+  };
+
+  const handleInputChange = (field: string, val: string) => {
+    updateStore({
       personal_info: {
         ...personal,
         [field]: val,
@@ -70,8 +101,7 @@ export default function ReviewPage() {
 
   const handleAddSkill = () => {
     if (!newSkill.trim()) return;
-    setResumeData({
-      ...resumeData,
+    updateStore({
       skills: [...skills, newSkill.trim()],
     });
     setNewSkill('');
@@ -80,8 +110,7 @@ export default function ReviewPage() {
   const handleRemoveSkill = (index: number) => {
     const updated = [...skills];
     updated.splice(index, 1);
-    setResumeData({
-      ...resumeData,
+    updateStore({
       skills: updated,
     });
   };
@@ -92,27 +121,56 @@ export default function ReviewPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-violet-950 via-[#5B16FE] to-indigo-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-purple-500/20">
-        <div>
+      {/* Header Banner dengan Parallax Floating Badges */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-violet-950 via-[#5B16FE] to-indigo-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-purple-500/20">
+        
+        {/* Floating Badge 1 (FileCheck) - Bergerak ke bawah & rotasi searah jarum jam saat di-scroll */}
+        <div 
+          className="absolute -top-3 left-4 md:left-1/3 opacity-25 pointer-events-none transition-transform duration-75 ease-out"
+          style={{
+            transform: `translate3d(0, ${scrollY * 0.25}px, 0) rotate(${-12 + scrollY * 0.08}deg)`,
+          }}
+        >
+          <div className="p-3 md:p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 shadow-xl">
+            <FileCheck className="w-8 h-8 md:w-12 md:h-12 text-[#FACC15]" />
+          </div>
+        </div>
+
+        {/* Floating Badge 2 (Zap) - Bergerak ke atas & rotasi berlawanan arah jarum jam saat di-scroll */}
+        <div 
+          className="absolute -bottom-4 right-1/3 md:right-1/4 opacity-25 pointer-events-none transition-transform duration-75 ease-out"
+          style={{
+            transform: `translate3d(0, ${-scrollY * 0.2}px, 0) rotate(${12 - scrollY * 0.06}deg)`,
+          }}
+        >
+          <div className="p-2.5 md:p-3.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 shadow-xl">
+            <Zap className="w-7 h-7 md:w-10 md:h-10 text-[#FACC15]" />
+          </div>
+        </div>
+
+        {/* Header Content */}
+        <div className="relative z-10 max-w-xl">
           <div className="inline-flex items-center gap-2 bg-[#FACC15]/20 border border-[#FACC15]/40 text-[#FACC15] text-xs font-bold uppercase px-3 py-1 rounded-full mb-2">
             <Sparkles className="w-3.5 h-3.5" /> AI Parsing Complete
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
             Review & Konfirmasi Data Profil
           </h1>
-          <p className="text-xs md:text-sm text-purple-100 mt-1 max-w-xl opacity-90">
+          <p className="text-xs md:text-sm text-purple-100 mt-1 opacity-90 leading-relaxed">
             Periksa hasil ekstraksi AI di bawah. Seluruh data ini akan digunakan sebagai basis kustomisasi CV ATS dan matching lowongan kerja.
           </p>
         </div>
 
-        <button
-          onClick={handleProceedToJobs}
-          className="bg-[#FACC15] hover:bg-yellow-300 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-xs md:text-sm transition-all shadow-lg hover:shadow-yellow-400/20 flex items-center gap-2 active:scale-95 shrink-0"
-        >
-          <span>Simpan & Cari Lowongan Cocok</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        {/* Action Button */}
+        <div className="relative z-10 shrink-0 w-full md:w-auto">
+          <button
+            onClick={handleProceedToJobs}
+            className="w-full md:w-auto bg-[#FACC15] hover:bg-yellow-300 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-xs md:text-sm transition-all shadow-lg hover:shadow-yellow-400/20 flex items-center justify-center gap-2 active:scale-95"
+          >
+            <span>Simpan & Cari Lowongan Cocok</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       <div className="space-y-6">

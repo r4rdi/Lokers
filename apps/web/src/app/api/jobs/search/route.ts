@@ -1,42 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-export async function GET(req: NextRequest) {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function GET() {
   try {
-    const { searchParams } = new URL(req.url);
-    const query = searchParams.get('q') || '';
-    const location = searchParams.get('location') || '';
+    const { data: jobs, error } = await supabase
+      .from("jobs")
+      .select("*")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
 
-    // 1. Query dasar dari database Supabase
-    let dbQuery = supabase
-      .from('scraped_jobs')
-      .select('id, job_title, company_name, location, salary_range, required_skills, raw_description, scraped_at')
-      .eq('is_active', true)
-      .order('scraped_at', { ascending: false });
+    if (error) throw new Error(error.message);
 
-    // Filter teks jika pengguna mengetik kata kunci pencarian
-    if (query) {
-      dbQuery = dbQuery.or(`job_title.ilike.%${query}%,company_name.ilike.%${query}%,raw_description.ilike.%${query}%`);
-    }
-
-    if (location) {
-      dbQuery = dbQuery.ilike('location', `%${location}%`);
-    }
-
-    const { data: jobs, error } = await dbQuery;
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      total: jobs?.length || 0,
-      data: jobs || [],
-    });
-  } catch (err: any) {
+    return NextResponse.json({ success: true, data: jobs });
+  } catch (error: any) {
     return NextResponse.json(
-      { error: err.message || 'Terjadi kesalahan pada server saat mengambil lowongan' },
+      { success: false, error: error.message || "Gagal mengambil data jobs." },
       { status: 500 }
     );
   }
