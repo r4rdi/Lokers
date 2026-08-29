@@ -1,186 +1,135 @@
-Untuk Lokers! AI, saya merekomendasikan kombinasi 1A + 2B + 3B. Ini paling aman untuk MVP, demo lomba, sekaligus lebih mudah dikembangkan ke production.
+Untuk proyek Lokers!, saya menyarankan urutannya bukan berdasarkan tampilan UI terlebih dahulu, tetapi berdasarkan dependency antar-komponen.
 
-1. Penyimpanan Lowongan → Opsi A
+Urutan eksekusi yang paling aman
 
-Gunakan pemisahan fungsi:
+1. 🥇 Integrasi AI & Endpoint API — PRIORITAS UTAMA
 
-scraped_jobs
-     ↓
-Data hasil ingestion/scraping
-     ↓
-Normalisasi & validasi
-     ↓
+Mulai dari:
+
+Upload CV
+   ↓
+PDF/DOCX Extractor
+   ↓
+Raw Text
+   ↓
+OpenAI / LLM Parser
+   ↓
+Structured JSON
+   ↓
+API Response
+
+Pastikan endpoint seperti:
+
+POST /api/resume/parse
+
+sudah dapat menerima file dan menghasilkan struktur CV yang konsisten.
+
+Contoh:
+
+{
+  "personal": {},
+  "summary": "",
+  "skills": [],
+  "experience": [],
+  "education": []
+}
+
+Kenapa ini pertama? Karena database dan UI nantinya membutuhkan bentuk data yang sudah jelas.
+
+2. 🥈 Integrasi Database & Schema
+
+Setelah output parser sudah stabil:
+
+LLM JSON
+   ↓
+Validation
+   ↓
+PostgreSQL / Supabase
+   ↓
+Resume
+
+Di tahap ini baru finalisasi:
+
+users
+resumes
+experiences
+educations
+skills
 jobs
-     ↓
-Data lowongan yang digunakan aplikasi
-     ↓
-/jobs → /customize/[jobId]
+job_embeddings
+profile_embeddings
 
-Namun, jangan menyalin data setiap kali pengguna memilih lowongan. Lebih baik jobs menjadi tabel utama yang sudah berisi data lowongan terkurasi dari proses ingestion.
+dan pgvector.
 
-Dengan begitu:
+Catatan penting: jangan buru-buru mengimplementasikan embedding sebelum pipeline CV parsing stabil. Embedding membutuhkan data yang sudah bersih dan terstruktur.
 
-scraped_jobs = staging/raw ingestion
-jobs = canonical/production job data
-/jobs membaca jobs
-/customize/[jobId] menggunakan jobs.id
+3. 🥉 Pengembangan UI/UX Builder
 
-Ini menghindari duplikasi data dan membuat pipeline scraper lebih rapi.
+Setelah API + database siap:
 
-2. Kredit AI → Opsi B
-
-Kredit dikurangi setelah Gemini berhasil menghasilkan JSON dan hasilnya berhasil disimpan ke generated_resumes.
-
-Alurnya:
-
-Klik Generate
-      ↓
-Validasi user & credit
-      ↓
-Gemini API
-      ↓
-JSON valid?
-   ┌──┴──┐
-  Tidak  Ya
-   ↓      ↓
-Tidak    Save
-potong   generated_resumes
-kredit      ↓
-          Kurangi
-          1 credit
-
-Ini lebih adil bagi pengguna. Kalau Gemini gagal, timeout, menghasilkan JSON invalid, atau proses penyimpanan gagal, kredit tidak seharusnya hilang.
-
-Tetapi tambahkan server-side locking/idempotency agar satu request tidak bisa mengurangi atau memakai kredit berkali-kali karena double-click/retry.
-
-3. AI Tailor → Opsi B: Manual Trigger
-
-Saya sangat merekomendasikan Manual Trigger.
-
-Saat /customize/[jobId] dibuka:
-
-┌──────────────────────────────────────────────┐
-│ LOWONGAN TARGET        │ CV ANDA             │
-│                                              │
-│ Junior Backend Dev      │ Professional       │
-│ PT ABC                  │ Summary             │
-│                                              │
-│ Requirements            │ Skills              │
-│ • Node.js               │ • JavaScript        │
-│ • PostgreSQL            │ • React             │
-│ • REST API              │ • Node.js           │
-│                                              │
-│ Match awal: 72%         │                     │
-│                                              │
-│                        [Generate Tailored CV] │
-└──────────────────────────────────────────────┘
-
-Setelah pengguna menekan:
-
-Generate Tailored CV
-
-baru:
-
-CV Master
-    +
-Job Target
+Database
     ↓
-Gemini
-    ↓
-Tailored CV
-    +
-ATS Match Score
-    +
-Cover Letter
-    ↓
-Preview diperbarui
-    ↓
-generated_resumes
-Kenapa bukan Auto-trigger?
+CVFormEditor ←→ LivePreview
+                    ↓
+                 Template
 
-Karena membuka halaman tidak selalu berarti pengguna ingin menggunakan kredit AI.
+CVFormEditor dapat mengambil data dari API dan LivePreview menggunakan struktur CV yang sama.
 
-Misalnya pengguna hanya ingin:
+Dengan begitu UI tidak memiliki logika AI sendiri.
 
-melihat detail lowongan;
-membandingkan requirement;
-melihat CV mereka;
-mengganti template;
-kembali ke halaman tersebut.
+4. 🟢 Deployment & CI/CD
 
-Kalau Auto-trigger digunakan, setiap membuka halaman bisa berpotensi menjalankan AI dan mengurangi/mengunci penggunaan kredit.
+Terakhir:
 
-Manual trigger jauh lebih baik untuk UX dan kontrol biaya.
+Local Development
+       ↓
+GitHub
+       ↓
+CI/CD
+       ↓
+Vercel / Railway / Docker
+       ↓
+Production
 
-Keputusan final
+Environment variable seperti:
 
-1. Lowongan: Opsi A
-2. Kredit AI: Opsi B
-3. AI Tailor: Opsi B
+OPENAI_API_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+DATABASE_URL=
 
-Sehingga arsitektur Phase 5:
+baru dikonfigurasi untuk production setelah aplikasi lokal sudah berjalan end-to-end.
 
-                    /jobs
-                      │
-                      ▼
-                 jobs.id
-                      │
-                      ▼
-             /customize/[jobId]
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-      Job Data                Master CV
-          │                       │
-          └───────────┬───────────┘
-                      ▼
-             [Generate Tailored CV]
-                      │
-                      ▼
-                 Credit Check
-                      │
-                      ▼
-                 Gemini API
-                      │
-                      ▼
-              Structured JSON
-                      │
-                 Zod Validate
-                      │
-              ┌───────┴───────┐
-              │               │
-            Valid           Invalid
-              │               │
-              ▼               ▼
-      generated_resumes     Error
-              │
-              ▼
-        Deduct 1 Credit
-              │
-              ▼
-       Update Split-Screen
-              │
-       ┌──────┴──────┐
-       ▼             ▼
- Tailored CV    Cover Letter
-       │
-       ▼
-   Export PDF
-Satu revisi penting pada database
+Jadi pilihan saya:
 
-Karena sebelumnya kita memiliki scraped_jobs dan jobs, saya menyarankan jangan membuat keduanya memiliki struktur/fungsi yang identik.
+Eksekusi terlebih dahulu: Integrasi AI & Endpoint API.
 
-Idealnya:
+Target milestone pertama sebaiknya bukan sekadar "API sudah dibuat", tetapi:
 
-scraped_jobs
-→ staging/raw ingestion
-→ boleh memiliki data sementara/metadata scraper
+             ┌──────────────┐
+             │ Upload CV    │
+             └──────┬───────┘
+                    ↓
+             ┌──────────────┐
+             │ PDF Extract  │
+             └──────┬───────┘
+                    ↓
+             ┌──────────────┐
+             │ LLM Parser   │
+             └──────┬───────┘
+                    ↓
+             ┌──────────────┐
+             │ JSON Schema  │
+             └──────┬───────┘
+                    ↓
+             ┌──────────────┐
+             │ API Response │
+             └──────────────┘
 
-jobs
-→ canonical job
-→ data yang ditampilkan aplikasi
-→ memiliki ID stabil yang digunakan `/customize/[jobId]`
+Kalau milestone ini berhasil, barulah kita kunci schema PostgreSQL/Supabase.
 
-Sedangkan user_resumes tetap menjadi master CV pengguna, dan generated_resumes menjadi snapshot CV yang sudah ditailor terhadap job tertentu.
+Urutan finalnya:
 
-Dengan struktur tersebut, Phase 5 akan jauh lebih bersih dan kita bisa lanjut ke Matching Engine + /api/cv/tailor tanpa perlu mengubah fondasi database lagi.
+AI/API → Database/pgvector → UI/UX Builder → Deployment/CI/CD
+
+Untuk Lokers!, ini mengurangi risiko membangun UI dan database berdasarkan struktur data yang nantinya berubah-ubah akibat parser AI belum stabil.
