@@ -1,0 +1,57 @@
+[
+  {
+    "source_platform": "Linkedin",
+    "source_url": "https://www.linkedin.com/jobs/view/4458926946",
+    "company_name": "PT Asuransi Jiwa Sequis Life",
+    "job_title": "Backend Engineers",
+    "location": "Jakarta, Indonesia",
+    "salary_range": "TBD",
+    "raw_description": "None",
+    "scraped_at": "2026-08-29T10:40:43.106402Z",
+    "required_skills": []
+  },
+  {
+    "source_platform": "Linkedin",
+    "source_url": "https://www.linkedin.com/jobs/view/4440204415",
+    "company_name": "Kredivo Group",
+    "job_title": "Backend Engineer - Golang (SDE II)",
+    "location": "",
+    "salary_range": "TBD",
+    "raw_description": "None",
+    "scraped_at": "2026-08-29T10:40:43.106402Z",
+    "required_skills": []
+  },
+  {
+    "source_platform": "Indeed",
+    "source_url": "https://id.indeed.com/viewjob?jk=ad2bc35ef6caba8d",
+    "company_name": "Holywings",
+    "job_title": "Full Stack Developer",
+    "location": "Tangerang, JW, ID",
+    "salary_range": "TBD",
+    "raw_description": "Full Stack Developer with over 7 years of experience building and maintaining production grade web applications end-to-end, from frontend interfaces to backend services, databases, and external integrations. Proficient in Laravel and Node.js for backend development, with solid frontend skills in React, Vue.js, and modern JavaScript. Specialized in designing RESTful APIs, integrating payment gateway services including QRIS and bank transfers, building transaction processing workflows, and developing operational tools for fintech and enterprise environments. Experienced in the full application lifecycle including frontend development, backend logic, database architecture, third- party integrations, deployment, and production monitoring. Familiar with AI-assisted development practices using tools such as ChatGPT, Claude, and Copilot to accelerate development and improve engineering productivity.\n\nWork Location: In person",
+    "scraped_at": "2026-08-29T10:40:43.106402Z",
+    "required_skills": [
+      "Vue",
+      "React",
+      "Laravel",
+      "Node.js",
+      "JavaScript"
+    ]
+  },
+  {
+    "source_platform": "Indeed",
+    "source_url": "https://id.indeed.com/viewjob?jk=92723e647b93e5eb",
+    "company_name": "StraitsX",
+    "job_title": "Software Engineer, Engineering Excellence",
+    "location": "Jakarta, JW, ID",
+    "salary_range": "TBD",
+    "raw_description": "**About The Role**\n\nAs a Software Engineer on the Engineering Excellence team, you will play a key role in improving developer productivity, strengthening platform reliability, and enhancing security across our engineering organization.\n\nYou will design, build, and maintain internal platforms, AI-powered tools, and engineering standards that enable teams across Transaction Experience, Payment Rails, Trading Desk, Treasury, Account & Identity, Blockchain, and Card Issuance to move faster and operate more effectively. As part of the Engineering Excellence team, you will help reduce engineering friction, improve system observability and reliability, and promote secure, scalable development practices across the organization.\n\n**What You Will Do**\n\n* Design, build, and maintain internal tools, platforms, and AI-powered solutions that improve developer productivity and operational efficiency.\n* Support and enhance tooling used by Engineering, Product, and Operations teams.\n* Identify performance bottlenecks and operational inefficiencies across our systems.\n* Debug, troubleshoot, and implement solutions to improve system reliability, scalability, and throughput.\n* Contribute to observability, monitoring, and operational excellence initiatives.\n* Implement and maintain AI security guardrails and governance mechanisms to ensure the safe and compliant adoption of AI technologies.\n* Help evaluate and mitigate risks associated with AI-enabled systems and workflows.\n* Contribute to the development and adoption of engineering standards, guidelines, and best practices.\n* Promote secure, maintainable, and reliable software development across teams.\n* Partner closely with engineering teams across Trading Desk, Blockchain, Payment Rails, Treasury, and other domains to understand challenges and deliver impactful solutions.\n* Gather feedback from internal stakeholders and continuously improve the developer experience across the organization.\n\n**What We Are Looking For**\n\n* At least 2 years of professional software engineering experience building and operating production systems.\n* Demonstrated ability to deliver reliable, maintainable, and scalable software solutions.\n* Proficiency in one or more of the following languages: Ruby, Golang, JavaScript, or TypeScript.\n* Experience working with modern backend services, APIs, and distributed systems.\n* Strong understanding of relational databases such as MySQL and PostgreSQL.\n* Experience profiling, troubleshooting, and optimizing database queries and application performance.\n* Experience building developer tools, internal platforms, or AI-powered applications.\n* Familiarity with AI security practices, guardrails, or governance frameworks is a plus.\n* Basic understanding of payment systems, fintech infrastructure, or blockchain technologies is preferred.\n* Solid understanding of software design principles, system architecture, testing practices, and CI/CD pipelines.\n* Strong problem-solving skills and a passion for improving developer productivity and engineering excellence.",
+    "scraped_at": "2026-08-29T10:40:43.106402Z",
+    "required_skills": [
+      "MySQL",
+      "TypeScript",
+      "JavaScript",
+      "PostgreSQL"
+    ]
+  }
+]
