@@ -11,6 +11,7 @@
   "dependencies": {
     "@google/genai": "^2.19.0",
     "@google/generative-ai": "^0.24.1",
+    "@sparticuz/chromium": "^149.0.0",
     "@supabase/server": "^1.4.1",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
@@ -25,7 +26,7 @@
     "pdf-parse-fixed": "^1.1.1",
     "pdf-parse-fork": "^1.2.0",
     "pg": "^8.23.0",
-    "puppeteer": "^25.9.0",
+    "puppeteer-core": "^25.9.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwind-merge": "^3.6.0",
