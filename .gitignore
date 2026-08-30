@@ -5,3 +5,19 @@ build/
 .env
 .env.local
 coverage/
+
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache and files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+MVP.md
+requirements.txt
