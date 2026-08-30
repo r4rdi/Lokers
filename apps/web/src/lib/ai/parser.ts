@@ -1,75 +1,81 @@
-import { GoogleGenAI } from "@google/genai";
-import pdfParse from "pdf-parse-fork";
-import { resumeSchema, type ResumeData } from "./schema";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const apiKey = process.env.GEMINI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(apiKey);
 
-export async function extractTextFromPDF(pdfBuffer: Buffer): Promise<string> {
+export interface ParsedCVData {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  summary?: string;
+  skills?: string[];
+  experience?: Array<{
+    title: string;
+    company: string;
+    duration: string;
+    description: string;
+  }>;
+  education?: Array<{
+    degree: string;
+    institution: string;
+    year: string;
+  }>;
+}
+
+export async function parseResumeWithAI(rawText: string): Promise<ParsedCVData> {
+  if (!rawText || rawText.trim() === "") {
+    throw new Error("Teks CV tidak boleh kosong.");
+  }
+
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  const prompt = `
+    Kamu adalah sistem AI parser CV/Resume profesional. 
+    Ekstrak informasi dari teks resume berikut ke dalam format JSON yang valid.
+    
+    Hanya kembalikan JSON murni tanpa format markdown seperti \`\`\`json.
+    
+    Struktur JSON harus mengikuti skema berikut:
+    {
+      "fullName": "string",
+      "email": "string",
+      "phone": "string",
+      "summary": "string",
+      "skills": ["string"],
+      "experience": [
+        {
+          "title": "string",
+          "company": "string",
+          "duration": "string",
+          "description": "string"
+        }
+      ],
+      "education": [
+        {
+          "degree": "string",
+          "institution": "string",
+          "year": "string"
+        }
+      ]
+    }
+
+    Teks Resume:
+    ${rawText}
+  `;
+
   try {
-    const data = await pdfParse(pdfBuffer);
-    return data.text;
-  } catch (error) {
-    throw new Error("Gagal mengurai file PDF: " + (error as Error).message);
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text().trim();
+
+    // Membersihkan tag markdown jika AI secara tidak sengaja menambahkannya
+    const cleanJSON = responseText.replace(/```json|```/g, "").trim();
+
+    return JSON.parse(cleanJSON) as ParsedCVData;
+  } catch (error: any) {
+    console.error("Gagal melakukan parse CV dengan AI:", error);
+    throw new Error(`Gagal memproses data CV: ${error.message}`);
   }
 }
 
-export async function parseResumeWithAI(rawText: string): Promise<ResumeData> {
-  const prompt = `Kamu adalah sistem ekstraksi ATS CV profesional. Ekstrak teks CV mentah berikut menjadi objek JSON persis sesuai struktur ini:
-
-{
-  "personal": {
-    "name": "Nama Lengkap",
-    "email": "email@example.com",
-    "phone": "08123456789",
-    "address": "Kota/Alamat",
-    "linkedin": "url linkedin"
-  },
-  "skills": ["Skill 1", "Skill 2", "Skill 3"],
-  "education": [
-    {
-      "institution": "Nama Universitas/Sekolah",
-      "degree": "S1/Diploma/SMA",
-      "field_of_study": "Jurusan",
-      "graduation_year": "2023"
-    }
-  ],
-  "experience": [
-    {
-      "company": "Nama Perusahaan",
-      "position": "Jabatan",
-      "start_date": "2021",
-      "end_date": "2023",
-      "description": "Deskripsi Pekerjaan"
-    }
-  ]
-}
-
-Aturan Penting:
-1. "skills" WAJIB berupa Array of Strings tunggal, BUKAN Objek.
-2. "graduation_year" WAJIB berupa String.
-3. Jangan pernah mengubah nama key utama ("personal", "skills", "education", "experience").
-
-Teks CV Mentah:
-${rawText}`;
-
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      temperature: 0.1,
-    },
-  });
-
-  const content = response.text;
-  if (!content) throw new Error("Tidak ada respons dari modul AI Gemini.");
-
-  let jsonParsed = JSON.parse(content);
-
-  // Sanitasi Otomatis: Jika skills dikembalikan sebagai Objek oleh LLM, ubah menjadi Array
-  if (jsonParsed.skills && !Array.isArray(jsonParsed.skills) && typeof jsonParsed.skills === "object") {
-    jsonParsed.skills = Object.values(jsonParsed.skills).flat();
-  }
-
-  return resumeSchema.parse(jsonParsed);
-}
+// Menambahkan alias export untuk menjaga kompatibilitas impor lama
+export { parseResumeWithAI as parseTextToJSON };
