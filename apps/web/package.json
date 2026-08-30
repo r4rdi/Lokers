@@ -14,7 +14,6 @@
     "@supabase/server": "^1.4.1",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
-    "@tailwindcss/postcss": "^4.3.3",
     "axios": "^1.19.0",
     "clsx": "^2.1.1",
     "groq-sdk": "^1.6.0",
