@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useResumeStore } from '@/stores/useResumeStore';
 import { Sparkles, Save, Plus, Trash2, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-export default function ReviewPage() {
+// 1. Komponen Internal yang Memuat Logika Hook & UI Utama
+function ReviewContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const cvId = searchParams.get('id');
@@ -193,5 +194,21 @@ export default function ReviewPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// 2. Main Page Component (Export Default) yang Menggunakan Suspense Wrapper
+export default function ReviewPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-[#5B16FE]" />
+          <p className="text-sm font-medium text-slate-500">Memuat modul review...</p>
+        </div>
+      }
+    >
+      <ReviewContent />
+    </Suspense>
   );
 }

@@ -2,6 +2,7 @@
   "name": "lokers-ai",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.9.1",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -12,6 +13,6 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
-    "turbo": "^2.0.0"
+    "turbo": "^2.10.12"
   }
 }

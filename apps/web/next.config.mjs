@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Pindahkan pemrosesan pdf-parse ke tingkat Node.js Native Runtime
-  serverExternalPackages: ["pdf-parse"],
+  reactStrictMode: true,
+  // Pastikan TIDAK ADA baris: experimental: { lightningcss: true }
 };
 
 export default nextConfig;
