@@ -8,7 +8,6 @@ export async function proxy(request: NextRequest) {
         },
     });
 
-    // Inisialisasi Supabase Client untuk Server Edge
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -32,12 +31,10 @@ export async function proxy(request: NextRequest) {
         }
     );
 
-    // Verifikasi Sesi Pengguna dari Supabase Auth
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
-    // Daftar rute yang memerlukan Autentikasi Login
     const protectedRoutes = [
         '/dashboard',
         '/jobs',
@@ -51,7 +48,6 @@ export async function proxy(request: NextRequest) {
         request.nextUrl.pathname.startsWith(path)
     );
 
-    // Pengalihan otomatis ke halaman signin jika belum terautentikasi
     if (isProtectedRoute && !user) {
         const redirectUrl = new URL('/signin', request.url);
         redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);
@@ -63,9 +59,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        /*
-         * Mengecualikan file statis dan aset media dari proses eksekusi Proxy
-         */
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 };
