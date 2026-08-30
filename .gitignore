@@ -21,3 +21,11 @@ __pycache__/
 .mypy_cache/
 MVP.md
 requirements.txt
+
+# Cache & Build Artifacts
+.turbo
+apps/web/.turbo
+.next
+apps/web/.next
+dist
+node_modules
