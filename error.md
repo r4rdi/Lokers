@@ -1,42 +1,41 @@
-16:15:52.179 Running build in Washington, D.C., USA (East) – iad1
-16:15:52.180 Build machine configuration: 2 cores, 8 GB
-16:15:52.223 Cloning github.com/r4rdi/Lokers (Branch: main, Commit: ff31caf)
-16:15:52.224 Skipping build cache, deployment was triggered without cache.
-16:15:52.613 Cloning completed: 389.000ms
-16:15:52.969 Running "vercel build"
-16:15:53.016 Vercel CLI 59.3.0
-16:15:53.591 Installing dependencies...
-16:16:13.961 
-16:16:13.962 added 243 packages in 20s
-16:16:13.962 
-16:16:13.962 38 packages are looking for funding
-16:16:13.962   run `npm fund` for details
-16:16:13.964 npm warn allow-scripts 4 packages have install scripts not yet covered by allowScripts:
-16:16:13.965 npm warn allow-scripts   @google/genai@2.19.0 (preinstall: echo 'preinstall: no-op')
-16:16:13.965 npm warn allow-scripts   core-js@3.50.0 (postinstall: node -e "try{require('./postinstall')}catch(e){}")
-16:16:13.966 npm warn allow-scripts   protobufjs@7.6.6 (postinstall: node scripts/postinstall)
-16:16:13.967 npm warn allow-scripts   puppeteer@25.9.0 (postinstall: node install.mjs)
-16:16:13.967 npm warn allow-scripts
-16:16:13.968 npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
-16:16:14.021 Running "npm run build"
-16:16:14.286 
-16:16:14.287 > web@0.1.0 build
-16:16:14.287 > next build
-16:16:14.288 
-16:16:14.795 ▲ Next.js 16.3.3 (Turbopack)
-16:16:14.813 ✓ Running next.config.mjs took 17ms
-16:16:15.125 Attention: Next.js now collects completely anonymous telemetry regarding usage.
-16:16:15.125 This information is used to shape Next.js' roadmap and prioritize features.
-16:16:15.125 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-16:16:15.125 https://nextjs.org/telemetry
-16:16:15.125 
-16:16:15.141   Downloading swc package @next/swc-linux-x64-gnu... to /vercel/.cache/next-swc
-16:16:16.294   Downloading swc package @next/swc-linux-x64-musl... to /vercel/.cache/next-swc
-16:16:17.510 
-16:16:17.601 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
-16:16:17.601 
-16:16:17.601   To migrate automatically, run:
-16:16:17.601   npx @next/codemod@canary middleware-to-proxy .
-16:16:17.601 
-16:16:17.601   Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-16:16:17.635   Creating an optimized production build ...
+D:\Projects\lokers-ai> npm run build
+
+> lokers-ai@0.1.0 build
+> turbo run build
+
+• turbo 2.10.12
+
+   • Packages in scope: web
+   • Running build in 1 packages
+   • Remote caching disabled
+
+web:build: cache miss, executing 5a72efaf145f22f6
+web:build: 
+web:build: > web@0.1.0 build
+web:build: > next build
+web:build:
+web:build: ▲ Next.js 16.3.3 (Turbopack)
+web:build: - Environments: .env.local
+web:build: ✓ Running next.config.mjs took 25ms
+web:build: 
+web:build:   Creating an optimized production build ...
+web:build: ✓ Compiled successfully in 973ms
+web:build:   Running TypeScript ...
+web:build: src/services/puppeteer.service.ts(1,23): error TS2307: Cannot find module 'puppeteer' or its corresponding type declarations.
+web:build: Failed to type check.
+web:build: 
+web:build: npm error Lifecycle script `build` failed with error:
+web:build: npm error code 1
+web:build: npm error path D:\Projects\lokers-ai\apps\web
+web:build: npm error workspace web@0.1.0
+web:build: npm error location D:\Projects\lokers-ai\apps\web
+web:build: npm error command failed
+web:build: npm error command C:\WINDOWS\system32\cmd.exe /d /s /c next build
+web#build:  ERROR  command (D:\Projects\lokers-ai\apps\web) D:\Program Files\nodejs\node.exe D:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js run build exited (1)
+
+ Tasks:    0 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    3.212s
+Failed:    web#build
+
+ ERROR  run failed: command  exited (1)
