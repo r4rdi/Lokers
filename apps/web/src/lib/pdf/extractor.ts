@@ -1,4 +1,4 @@
-import pdfParse from "pdf-parse";
+import pdfParse from "pdf-parse-fork";
 
 export async function extractTextFromPDF(fileBuffer: Buffer): Promise<string> {
   try {

@@ -24,6 +24,7 @@ export async function generatePdfFromTemplate(data: any, styling: any): Promise<
   try {
     const page = await browser.newPage();
 
+    // Perbaikan: gunakan 'domcontentloaded' yang valid untuk setContent()
     await page.setContent(htmlContent, {
       waitUntil: 'domcontentloaded'
     });

@@ -1,323 +1,194 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useResumeStore } from '@/stores/useResumeStore';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Briefcase, 
-  Wrench, 
-  Plus, 
-  X, 
-  ArrowRight, 
-  Sparkles, 
-  FileCheck, 
-  Zap 
-} from 'lucide-react';
+import { Sparkles, Save, Plus, Trash2, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
+import axios from 'axios';
 
 export default function ReviewPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const cvId = searchParams.get('id');
+
   const { resumeData, setResumeData } = useResumeStore();
+  const [formData, setFormData] = useState<any>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [newSkill, setNewSkill] = useState('');
-  const [scrollY, setScrollY] = useState(0);
 
-  // Parallax scroll listener
   useEffect(() => {
-    let ticking = false;
+    if (resumeData) {
+      setFormData(resumeData);
+    }
+  }, [resumeData]);
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
-          ticking = false;
-        });
-        ticking = true;
+  if (!formData) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-[#5B16FE]" />
+        <p className="text-sm font-medium text-slate-500">Memuat data hasil parsing AI...</p>
+      </div>
+    );
+  }
+
+  // Handler pengubahan field kontak/identitas dasar
+  const handleContactChange = (field: string, val: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      parsed_data: {
+        ...prev.parsed_data,
+        kontak: { ...prev.parsed_data?.kontak, [field]: val }
       }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Fallback data default yang aman untuk tipe ResumeData
-  const personal = resumeData?.personal_info || {
-    full_name: 'Rafi Ardiansyah',
-    headline: 'Software Engineer',
-    email: 'rafi.ardiansyah@example.com',
-    phone: '081234567890',
-    location: 'Jakarta Selatan, Indonesia',
+    }));
   };
 
-  const experiences = resumeData?.experiences || [
-    {
-      role: 'Software Engineer',
-      company: 'PT Digital Kreasi Nusantara',
-      period: 'Januari 2023 - Sekarang',
-      highlights: [
-        'Merancang dan mengimplementasikan RESTful API backend menggunakan Node.js, Express, dan PostgreSQL.',
-        'Mengembangkan modul dashboard interaktif berbasis React, Next.js, dan Tailwind CSS.',
-        'Mengurangi waktu respon query database hingga 25% melalui optimasi indeks relasional.',
-      ],
-    },
-  ];
-
-  const education = resumeData?.education || [
-    {
-      institution: 'Universitas Negeri Indonesia',
-      degree: 'S1',
-      field_of_study: 'Teknik Informatika',
-      graduation_year: '2022',
-    },
-  ];
-
-  const skills = resumeData?.skills || [
-    'JavaScript', 'TypeScript', 'Node.js', 'React', 'Next.js', 'Express', 'Tailwind CSS', 'PostgreSQL', 'Docker', 'REST API'
-  ];
-
-  const updateStore = (updatedFields: {
-    personal_info?: typeof personal;
-    experiences?: typeof experiences;
-    skills?: typeof skills;
-    education?: typeof education;
-  }) => {
-    setResumeData({
-      personal_info: updatedFields.personal_info || personal,
-      experiences: updatedFields.experiences || experiences,
-      skills: updatedFields.skills || skills,
-      education: updatedFields.education || education,
-    });
-  };
-
-  const handleInputChange = (field: string, val: string) => {
-    updateStore({
-      personal_info: {
-        ...personal,
-        [field]: val,
-      },
-    });
-  };
-
+  // Handler Tambah & Hapus Skill
   const handleAddSkill = () => {
     if (!newSkill.trim()) return;
-    updateStore({
-      skills: [...skills, newSkill.trim()],
-    });
+    const currentSkills = formData.parsed_data?.skills || [];
+    setFormData((prev: any) => ({
+      ...prev,
+      parsed_data: {
+        ...prev.parsed_data,
+        skills: [...currentSkills, newSkill.trim()]
+      }
+    }));
     setNewSkill('');
   };
 
   const handleRemoveSkill = (index: number) => {
-    const updated = [...skills];
+    const updated = [...(formData.parsed_data?.skills || [])];
     updated.splice(index, 1);
-    updateStore({
-      skills: updated,
-    });
+    setFormData((prev: any) => ({
+      ...prev,
+      parsed_data: { ...prev.parsed_data, skills: updated }
+    }));
   };
 
-  const handleProceedToJobs = () => {
-    router.push('/jobs');
+  // Handler Simpan Ke Supabase & Lanjut ke Match Engine (/jobs)
+  const handleSaveAndContinue = async () => {
+    setIsSaving(true);
+    try {
+      const response = await axios.put('/api/cv/update', {
+        cv_id: cvId || formData.id,
+        parsed_data: formData.parsed_data,
+        skills: formData.parsed_data?.skills || [],
+      });
+
+      if (response.data.success) {
+        setResumeData(response.data.data);
+        router.push('/jobs'); // Berpindah ke Tahap Matching Engine
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Gagal menyimpan data resume.');
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  const contact = formData.parsed_data?.kontak || {};
+  const skills = formData.parsed_data?.skills || [];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      {/* Header Banner dengan Parallax Floating Badges */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-violet-950 via-[#5B16FE] to-indigo-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-purple-500/20">
-        
-        {/* Floating Badge 1 (FileCheck) - Bergerak ke bawah & rotasi searah jarum jam saat di-scroll */}
-        <div 
-          className="absolute -top-3 left-4 md:left-1/3 opacity-25 pointer-events-none transition-transform duration-75 ease-out"
-          style={{
-            transform: `translate3d(0, ${scrollY * 0.25}px, 0) rotate(${-12 + scrollY * 0.08}deg)`,
-          }}
+    <div className="max-w-4xl mx-auto px-4 py-10">
+      {/* Top Banner Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+          <div className="inline-flex items-center gap-1.5 bg-purple-50 text-[#5B16FE] text-xs font-bold px-3 py-1 rounded-full mb-2">
+            <Sparkles className="w-3.5 h-3.5" /> Human-in-the-Loop Review
+          </div>
+          <h1 className="text-2xl font-black text-slate-900">Verifikasi Data CV Anda</h1>
+          <p className="text-xs text-slate-500 mt-1">Periksa dan sesuaikan ekstraksi AI sebelum digunakan oleh Matching Engine.</p>
+        </div>
+        <button
+          onClick={handleSaveAndContinue}
+          disabled={isSaving}
+          className="bg-[#5B16FE] hover:bg-[#4208B8] text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md transition shrink-0 disabled:opacity-50"
         >
-          <div className="p-3 md:p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 shadow-xl">
-            <FileCheck className="w-8 h-8 md:w-12 md:h-12 text-[#FACC15]" />
-          </div>
-        </div>
-
-        {/* Floating Badge 2 (Zap) - Bergerak ke atas & rotasi berlawanan arah jarum jam saat di-scroll */}
-        <div 
-          className="absolute -bottom-4 right-1/3 md:right-1/4 opacity-25 pointer-events-none transition-transform duration-75 ease-out"
-          style={{
-            transform: `translate3d(0, ${-scrollY * 0.2}px, 0) rotate(${12 - scrollY * 0.06}deg)`,
-          }}
-        >
-          <div className="p-2.5 md:p-3.5 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 shadow-xl">
-            <Zap className="w-7 h-7 md:w-10 md:h-10 text-[#FACC15]" />
-          </div>
-        </div>
-
-        {/* Header Content */}
-        <div className="relative z-10 max-w-xl">
-          <div className="inline-flex items-center gap-2 bg-[#FACC15]/20 border border-[#FACC15]/40 text-[#FACC15] text-xs font-bold uppercase px-3 py-1 rounded-full mb-2">
-            <Sparkles className="w-3.5 h-3.5" /> AI Parsing Complete
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            Review & Konfirmasi Data Profil
-          </h1>
-          <p className="text-xs md:text-sm text-purple-100 mt-1 opacity-90 leading-relaxed">
-            Periksa hasil ekstraksi AI di bawah. Seluruh data ini akan digunakan sebagai basis kustomisasi CV ATS dan matching lowongan kerja.
-          </p>
-        </div>
-
-        {/* Action Button */}
-        <div className="relative z-10 shrink-0 w-full md:w-auto">
-          <button
-            onClick={handleProceedToJobs}
-            className="w-full md:w-auto bg-[#FACC15] hover:bg-yellow-300 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-xs md:text-sm transition-all shadow-lg hover:shadow-yellow-400/20 flex items-center justify-center gap-2 active:scale-95"
-          >
-            <span>Simpan & Cari Lowongan Cocok</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
+          {isSaving ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <>
+              <span>Simpan & Cari Lowongan</span>
+              <ArrowRight className="w-4 h-4 text-[#FACC15]" />
+            </>
+          )}
+        </button>
       </div>
 
       <div className="space-y-6">
-        {/* Section 1: Informasi Pribadi */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
-            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-[#5B16FE] flex items-center justify-center font-bold">
-              <User className="w-5 h-5" />
+        {/* Section 1: Data Kontak & Profil */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <h2 className="text-base font-bold text-slate-900 mb-4 border-b pb-2">Informasi Kontak & Diri</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-slate-600">Nama Lengkap</label>
+              <input
+                type="text"
+                value={contact.nama || ''}
+                onChange={(e) => handleContactChange('nama', e.target.value)}
+                className="w-full mt-1 p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#5B16FE] outline-none"
+              />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Informasi Pribadi & Kontak</h2>
-              <p className="text-xs text-slate-500">Identitas utama untuk kepala surat lamaran dan resume.</p>
+              <label className="text-xs font-semibold text-slate-600">Email</label>
+              <input
+                type="text"
+                value={contact.email || ''}
+                onChange={(e) => handleContactChange('email', e.target.value)}
+                className="w-full mt-1 p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#5B16FE] outline-none"
+              />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-medium">
             <div>
-              <label className="block text-slate-700 font-semibold mb-1.5">Nama Lengkap</label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  value={personal.full_name || ''}
-                  onChange={(e) => handleInputChange('full_name', e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B16FE] text-slate-900"
-                />
-              </div>
+              <label className="text-xs font-semibold text-slate-600">Nomor Telepon</label>
+              <input
+                type="text"
+                value={contact.telepon || ''}
+                onChange={(e) => handleContactChange('telepon', e.target.value)}
+                className="w-full mt-1 p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#5B16FE] outline-none"
+              />
             </div>
-
             <div>
-              <label className="block text-slate-700 font-semibold mb-1.5">Headline / Profesi Target</label>
-              <div className="relative">
-                <Briefcase className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  value={personal.headline || ''}
-                  onChange={(e) => handleInputChange('headline', e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B16FE] text-slate-900"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-slate-700 font-semibold mb-1.5">Email Aktif</label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="email"
-                  value={personal.email || ''}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B16FE] text-slate-900"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-slate-700 font-semibold mb-1.5">Nomor Telepon / WhatsApp</label>
-              <div className="relative">
-                <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  value={personal.phone || ''}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5B16FE] text-slate-900"
-                />
-              </div>
+              <label className="text-xs font-semibold text-slate-600">Lokasi</label>
+              <input
+                type="text"
+                value={contact.lokasi || ''}
+                onChange={(e) => handleContactChange('lokasi', e.target.value)}
+                className="w-full mt-1 p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#5B16FE] outline-none"
+              />
             </div>
           </div>
         </div>
 
-        {/* Section 2: Keahlian (Skills) */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-              <Wrench className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-slate-900">Keahlian & Tag Kompetensi ({skills.length})</h2>
-              <p className="text-xs text-slate-500">Skill ini digunakan untuk pencocokan kata kunci algoritma ATS.</p>
-            </div>
-          </div>
-
+        {/* Section 2: Keahlian & Tech Stack */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <h2 className="text-base font-bold text-slate-900 mb-4 border-b pb-2">Keahlian (Skills & Competencies)</h2>
           <div className="flex flex-wrap gap-2 mb-4">
-            {skills.map((sk: string, idx: number) => (
-              <span
-                key={idx}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-[#5B16FE] font-bold text-xs rounded-xl border border-purple-200 transition"
-              >
-                <span>{sk}</span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSkill(idx)}
-                  className="hover:text-rose-500 transition"
-                >
-                  <X className="w-3.5 h-3.5" />
+            {skills.map((skill: string, idx: number) => (
+              <span key={idx} className="inline-flex items-center gap-1.5 bg-purple-50 border border-purple-200 text-[#5B16FE] text-xs font-bold px-3 py-1.5 rounded-xl">
+                {skill}
+                <button type="button" onClick={() => handleRemoveSkill(idx)} className="hover:text-rose-600">
+                  <Trash2 className="w-3 h-3" />
                 </button>
               </span>
             ))}
           </div>
-
-          <div className="flex gap-2 max-w-md">
+          <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Tambah skill baru (cth: GraphQL, AWS, Figma)..."
+              placeholder="Tambah keahlian baru (misal: Docker, Next.js)..."
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddSkill()}
-              className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#5B16FE]"
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
+              className="flex-1 p-2.5 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-[#5B16FE]"
             />
             <button
               type="button"
               onClick={handleAddSkill}
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center gap-1"
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1"
             >
               <Plus className="w-4 h-4" /> Tambah
             </button>
-          </div>
-        </div>
-
-        {/* Section 3: Riwayat Pengalaman Kerja */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-              <Briefcase className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-slate-900">Pengalaman Kerja Terstruktur</h2>
-              <p className="text-xs text-slate-500">Hasil ekstraksi poin pencapaian profesional.</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {experiences.map((exp: any, i: number) => (
-              <div key={i} className="p-5 bg-slate-50 border border-slate-200/80 rounded-2xl hover:border-purple-200 transition">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
-                  <h3 className="font-bold text-slate-900 text-sm">
-                    {exp.role} — <span className="text-[#5B16FE]">{exp.company}</span>
-                  </h3>
-                  <span className="text-xs font-semibold text-slate-500">{exp.period}</span>
-                </div>
-                <ul className="list-disc list-inside space-y-1 text-xs text-slate-600 mt-2">
-                  {exp.highlights?.map((hl: string, hIdx: number) => (
-                    <li key={hIdx} className="leading-relaxed">{hl}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
           </div>
         </div>
       </div>

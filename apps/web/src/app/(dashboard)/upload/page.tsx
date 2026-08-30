@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import { useResumeStore } from '@/stores/useResumeStore';
-import { 
-  UploadCloud, 
-  FileText, 
-  Sparkles, 
-  CheckCircle2, 
-  AlertCircle, 
-  X, 
-  Loader2, 
+import {
+  UploadCloud,
+  FileText,
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
+  X,
+  Loader2,
   ArrowRight,
   Download,
   FileDown
@@ -41,12 +41,12 @@ export default function UploadPage() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.text('(Nama Lengkap Anda)', margin, yPos);
-    
+
     yPos += 18;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.text('Email: contoh@gmail.com | Telepon: +62 812-3456-7890 | Lokasi: Jakarta Selatan, DKI Jakarta', margin, yPos);
-    
+
     yPos += 14;
     doc.text('LinkedIn: linkedin.com/in/username-123456 | GitHub: github.com/username', margin, yPos);
 
@@ -190,8 +190,17 @@ export default function UploadPage() {
         router.push('/review');
       }
     } catch (err: any) {
+      // Menangani status HTTP 401 (Unauthorized)
+      if (err.response?.status === 401) {
+        setErrorMsg('Sesi Anda telah berakhir atau belum login. Mengalihkan ke halaman login...');
+        setTimeout(() => {
+          router.push('/login'); // Ganti dengan rute login aplikasi kamu
+        }, 1500);
+        return;
+      }
+
       const serverMessage =
-        err.response?.data?.error || err.message || 'Gagal memproses dokumen PDF';
+        err.response?.data?.message || err.response?.data?.error || err.message || 'Gagal memproses dokumen PDF';
       setErrorMsg(serverMessage);
     } finally {
       setLoading(false);
@@ -201,10 +210,10 @@ export default function UploadPage() {
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-xl">
-        
+
         {/* Main Interactive Card Container */}
         <div className="relative bg-white rounded-3xl p-8 md:p-10 border border-slate-200/90 shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10">
-          
+
           {/* Subtle Top Glow Ornament */}
           <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-20 bg-gradient-to-b from-purple-400/20 to-transparent blur-2xl pointer-events-none" />
 
@@ -323,10 +332,9 @@ export default function UploadPage() {
             className={`
               w-full mt-6 py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5
               transition-all duration-300 relative overflow-hidden shadow-md
-              ${
-                loading || !file
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-                  : 'bg-[#5B16FE] hover:bg-[#4208B8] text-white shadow-purple-600/30 hover:shadow-xl hover:shadow-purple-600/40 hover:-translate-y-0.5 active:scale-[0.98]'
+              ${loading || !file
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                : 'bg-[#5B16FE] hover:bg-[#4208B8] text-white shadow-purple-600/30 hover:shadow-xl hover:shadow-purple-600/40 hover:-translate-y-0.5 active:scale-[0.98]'
               }
             `}
           >

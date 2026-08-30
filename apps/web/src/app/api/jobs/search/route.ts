@@ -1,26 +1,30 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const q = searchParams.get('q') || '';
+  const level = searchParams.get('level');
+  const type = searchParams.get('type');
 
-export async function GET() {
-  try {
-    const { data: jobs, error } = await supabase
-      .from("jobs")
-      .select("*")
-      .eq("is_active", true)
-      .order("created_at", { ascending: false });
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { getAll: () => cookieStore.getAll() } }
+  );
 
-    if (error) throw new Error(error.message);
+  let query = supabase.from('jobs').select('*').eq('is_active', true);
 
-    return NextResponse.json({ success: true, data: jobs });
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, error: error.message || "Gagal mengambil data jobs." },
-      { status: 500 }
-    );
+  if (q) {
+    query = query.or(`title.ilike.%${q}%,company.ilike.%${q}%,description.ilike.%${q}%`);
   }
+  if (level) query = query.eq('experience_level', level);
+  if (type) query = query.eq('job_type', type);
+
+  const { data, error } = await query.order('created_at', { ascending: false });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ jobs: data });
 }

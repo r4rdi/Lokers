@@ -6,5 +6,5 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Supabase URL atau Anon Key belum terpasang di .env.local');
 }
-
+  
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

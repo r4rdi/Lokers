@@ -1,13 +1,25 @@
 [{
-	"resource": "/d:/Projects/lokers-ai/apps/web/src/lib/ai/parser.ts",
+	"resource": "/d:/Projects/lokers-ai/apps/web/src/middleware.ts",
 	"owner": "typescript",
-	"code": "1192",
+	"code": "2724",
 	"severity": 8,
-	"message": "Module '\"d:/Projects/lokers-ai/apps/web/node_modules/pdf-parse/dist/pdf-parse/esm/index\"' has no default export.",
+	"message": "'\"next\"' has no exported member named 'NextResponse'. Did you mean 'NextApiResponse'?",
 	"source": "ts",
 	"startLineNumber": 2,
-	"startColumn": 8,
+	"startColumn": 10,
 	"endLineNumber": 2,
-	"endColumn": 16,
+	"endColumn": 22,
+	"origin": "extHost1"
+},{
+	"resource": "/d:/Projects/lokers-ai/apps/web/src/middleware.ts",
+	"owner": "typescript",
+	"code": "2724",
+	"severity": 8,
+	"message": "'\"next\"' has no exported member named 'NextRequest'. Did you mean 'NextApiRequest'?",
+	"source": "ts",
+	"startLineNumber": 2,
+	"startColumn": 29,
+	"endLineNumber": 2,
+	"endColumn": 40,
 	"origin": "extHost1"
 }]
